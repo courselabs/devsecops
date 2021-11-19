@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+
+  fulfilment-api:
+    image: courselabs/fulfilment-api
+    ports:
+      - "8071:80"
+    environment:
+      - OPENTRACING_JAEGER_ENABLED=true
+    networks:
+      - tracing 
+      - fulfilment 
+
+  fulfilment-authz:
+    image: courselabs/fulfilment-authz
+    ports:
+      - "8072:80"
+    environment:
+      - Observability__Trace__Console=false
+      - Observability__Trace__Jaeger=true
+    networks:
+      - tracing 
+      - fulfilment 
+
+  fulfilment-web:
+    image: courselabs/fulfilment-web
+    ports:
+      - "8070:80"
+    environment:
+      - Observability__Trace__Console=false
+      - Observability__Trace__Jaeger=true
+      - Documents__Authz__Url=http://fulfilment-authz/check
+    depends_on:
+      - fulfilment-api
+      - fulfilment-authz
+    networks:
+      - tracing 
+      - fulfilment 
+
+networks:
+  fulfilment:
+  tracing:
+    name: obsfun-tracing

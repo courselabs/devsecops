@@ -1,0 +1,15 @@
+services:
+  rng-api:
+    image: rng-api:21.05
+    networks:
+      - app-net
+
+  rng-web:
+    image: rng-web:21.05
+    environment:
+      - RngApi__Url=http://rng-api/rng
+    networks:
+      - app-net
+
+networks:
+  app-net:

@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+
+  node-exporter:
+    image: courselabs/node-exporter
+    networks: 
+      - metrics
+
+  fulfilment-api:
+    image: courselabs/fulfilment-api
+    ports:
+      - 8080:80
+    networks: 
+      - fulfilment
+      - metrics
+
+  fulfilment-processor:
+    image: courselabs/fulfilment-processor
+    environment:
+      - Observability__Metrics__IncludeRuntime=true
+    networks: 
+      - fulfilment
+      - metrics
+
+networks: 
+  fulfilment:
+  metrics:
+    name: obsfun-metrics

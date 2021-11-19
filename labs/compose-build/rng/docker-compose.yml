@@ -1,0 +1,23 @@
+services:
+  rng-api:
+    image: rng-api:21.05-local
+    networks:
+      - app-net
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile
+
+  rng-web:
+    image: rng-web:21.05-local
+    environment:
+      - RngApi__Url=http://rng-api/rng
+    ports:
+      - 8090:80
+    networks:
+      - app-net
+    build:
+      context: .
+      dockerfile: docker/web/Dockerfile
+
+networks:
+  app-net:

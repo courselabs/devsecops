@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+
+  elasticsearch:
+    image: courselabs/elasticsearch:7.10
+    ports: 
+      - 9200:9200
+    networks:
+      - logging
+
+  logstash:
+    image: courselabs/logstash:7.10
+    volumes:
+      - ./data:/data
+      - ./pipelines:/pipelines
+      - ./config/pipelines.yml:/usr/share/logstash/config/pipelines.yml
+    networks:
+      - logging
+
+  kibana:
+    image: courselabs/kibana:7.10
+    ports: 
+      - 5601:5601
+    networks:
+      - logging
+
+networks:
+  logging:
+    name: obsfun-logging

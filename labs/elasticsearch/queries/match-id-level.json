@@ -1,0 +1,23 @@
+{ 
+    "query": 
+    { 
+        "bool":  
+        {
+            "must" : 
+            [
+                {
+                    "match": 
+                    {
+                        "message": "21304897"
+                    }
+                },
+                {
+                    "match": 
+                    {
+                        "level": "INFO"
+                    }
+                }
+            ]
+        }
+    } 
+}

@@ -1,0 +1,10 @@
+services:
+  rng-api:
+    build:
+      context: .
+      dockerfile: docker/api/Dockerfile
+
+  rng-web:
+    build:
+      context: .
+      dockerfile: docker/web/Dockerfile

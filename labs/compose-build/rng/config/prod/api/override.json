@@ -1,0 +1,11 @@
+{
+    "Rng" : {
+      "Range": {
+        "Min": 0,
+        "Max": 5000
+      },
+      "FailAfter": {
+        "Enabled": false
+      }
+    }
+}

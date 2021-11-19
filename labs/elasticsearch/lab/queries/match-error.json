@@ -1,0 +1,22 @@
+{ 
+    "query": 
+    { 
+        "bool":  
+        {
+            "must" : 
+            {
+                "match": 
+                {
+                    "level": "ERROR"
+                }
+            },
+            "must_not" : 
+            {
+                "match": 
+                {
+                    "message": "document service unavailable"
+                }
+            }
+        }
+    } 
+}

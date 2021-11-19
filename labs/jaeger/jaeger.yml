@@ -1,0 +1,13 @@
+version: '3.7'
+
+services:
+  jaeger:
+    image: courselabs/jaeger:1.24
+    ports:
+      - "16686:16686"
+    networks:
+      - tracing  
+
+networks:
+  tracing:
+    name: obsfun-tracing

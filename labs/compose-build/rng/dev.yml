@@ -1,0 +1,13 @@
+services:
+  rng-api:
+    environment:
+      - Logging__LogLevel__Default=Debug
+    ports:
+      - "8089:80"
+
+  rng-web:
+    environment:
+      - Logging__LogLevel__Default=Debug
+      - RngApi__Url=http://rng-api/rng
+    ports:
+      - "8090:80"

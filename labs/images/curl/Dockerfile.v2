@@ -1,0 +1,8 @@
+# specifying an exact version makes the build repeatable
+FROM alpine:3.13
+
+# using the no-cache option creates a smaller image
+RUN apk add --no-cache curl
+
+# entrypoint lets users add options when the container starts
+ENTRYPOINT ["curl"]

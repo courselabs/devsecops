@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+
+  fulfilment-api:
+    image: courselabs/fulfilment-api
+    ports:
+      - "8071:80"
+    environment:
+      - OPENTRACING_JAEGER_ENABLED=true
+    networks:
+      - fulfilment 
+
+networks:
+  fulfilment:
