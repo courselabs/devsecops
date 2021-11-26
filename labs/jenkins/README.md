@@ -59,7 +59,7 @@ Job fails - kubectl command errors because there is no server. If a command fail
 
 > This is the old-school way of using Jenkins. There are better options
 
-## Managing Plugins
+## Plugins and the New UI
 
 Go to Jenkins homepage & select _Manage Jenkins_ then _Manage Plugins_
 
@@ -115,6 +115,20 @@ The build should succeed - check the output to see the messages
 Jenkins created that file. You can build it in the web UI, but more likely you will edit the text file directly.
 
 ## Storing Pipelines in Source Code
+
+Open Gogs at http://localhost:3000
+
+Sign in with courselabs/student
+
+You'll see an existing repo called labs
+
+Create a new repo called devsecops; leave all other options
+
+```
+git remote add jabs-jenkins http://localhost:3000/courselabs/devsecops.git
+
+git push -u origin main
+```
 
  - clone repo; edit pipeline
 

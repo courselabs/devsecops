@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+    environment {
+      RELEASE= "21.12"
+    }
+    stages {
+        stage('Audit tools') {                        
+            steps {
+                sh 'javac --version'
+            }
+        }
+        stage('Build') {
+            steps {
+              echo "Building Java app"
+              dir ('labs/jenkins') {
+                sh '''
+                  mkdir bin
+                  javac -d bin/HelloWorld.class src/HelloWorld.java
+                '''
+              }
+            }
+        }
+        stage('Test') {
+          steps {
+              echo "Running Java app"
+              dir ('labs/jenkins/out') {
+                sh 'java HelloWorld.java'
+              }
+            }
+        }
+    }
+}
