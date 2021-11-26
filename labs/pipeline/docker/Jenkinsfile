@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+    environment {
+      REGISTRY="docker.io"
+      REPOSITORY="courselabs"
+      IMAGE_TAG="${REGISTRY}/${REPOSITORY}/hello-world:${BUILD_NUMBER}"
+    }
+    stages {
+        stage('Audit tools') {                        
+            steps {
+                sh 'docker version'
+            }
+        }
+        stage('Build') {
+            steps {
+              echo "Building Java image"
+              dir ('labs/images/lab/Dockerfile') {
+                sh '''
+                  docker build -t ${IMAGE_TAG} .
+                '''
+              }
+            }
+        }
+        stage('Test') {
+          steps {
+              echo "Running Java container"
+              sh '''
+                docker run ${IMAGE_TAG}
+              '''
+            }
+        }
+    }
+}

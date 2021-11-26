@@ -2,7 +2,7 @@
 
 ## Running Jenkins
 
-docker-compose -f labs\jenkins\docker-compose.yml up -d
+docker-compose -f labs\jenkins\infra\docker-compose.yml up -d
 
 Browse to Jenkins at http://localhost:8080
 
@@ -125,9 +125,9 @@ You'll see an existing repo called labs
 Create a new repo called devsecops; leave all other options
 
 ```
-git remote add jabs-jenkins http://localhost:3000/courselabs/devsecops.git
+git remote add gogs http://localhost:3000/courselabs/devsecops.git
 
-git push -u jabs-jenkins main
+git push gogs main
 ```
 
 > Log in
