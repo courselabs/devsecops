@@ -15,7 +15,7 @@ pipeline {
               dir ('labs/jenkins/hello-world') {
                 sh '''
                   mkdir -p bin
-                  javac -d bin/HelloWorld.class src/HelloWorld.java
+                  javac -d bin src/HelloWorld.java
                 '''
               }
             }
