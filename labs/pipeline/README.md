@@ -25,7 +25,7 @@ Create a new pipeline
 - SCM = _Git_
 - Repository URL = `http://gogs:3000/courselabs/devsecops.git`
 - Branch Specifier = `refs/heads/main`
-- Script path = `labs/jenkins/pipeline/docker/Jenkinsfile`
+- Script path = `labs/pipeline/docker/Jenkinsfile`
 
 ## Multistage Docker Builds
 

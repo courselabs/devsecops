@@ -14,9 +14,9 @@ pipeline {
         stage('Build') {
             steps {
               echo "Building Java image"
-              dir ('labs/images/lab/Dockerfile') {
+              dir ('labs/pipeline') {
                 sh '''
-                  docker build -t ${IMAGE_TAG} .
+                  docker build -t ${IMAGE_TAG} -f docker/Dockerfile .
                 '''
               }
             }
