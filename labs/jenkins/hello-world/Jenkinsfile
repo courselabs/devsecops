@@ -14,7 +14,7 @@ pipeline {
               echo "Building Java app"
               dir ('labs/jenkins/hello-world') {
                 sh '''
-                  mkdir bin
+                  mkdir -p bin
                   javac -d bin/HelloWorld.class src/HelloWorld.java
                 '''
               }
