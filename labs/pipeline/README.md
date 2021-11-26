@@ -29,7 +29,11 @@ Create a new pipeline
 
 ## Multistage Docker Builds
 
-- whoami app
+- docker build for ^^
+
+- new pipeline called multi-stage
+- copy from `docker`
+- script path = `labs/pipeline/multi-stage/Jenkinsfile`
 
 
 ## Building with Docker Compose
