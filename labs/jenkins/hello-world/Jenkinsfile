@@ -26,7 +26,7 @@ pipeline {
               dir ('labs/jenkins/hello-world/out/bin') {
                 sh '''
                   ls *.class
-                  java HelloWorkd
+                  java HelloWorld
                 '''
               }
             }
