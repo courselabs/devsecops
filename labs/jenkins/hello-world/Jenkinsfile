@@ -24,7 +24,7 @@ pipeline {
           steps {
               echo "Running Java app"
               dir ('labs/jenkins/hello-world/bin') {
-                sh 'java HelloWorkd.java'
+                sh 'java HelloWorld.java'
               }
             }
         }
