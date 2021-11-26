@@ -127,18 +127,38 @@ Create a new repo called devsecops; leave all other options
 ```
 git remote add jabs-jenkins http://localhost:3000/courselabs/devsecops.git
 
-git push -u origin main
+git push -u jabs-jenkins main
 ```
 
- - clone repo; edit pipeline
+> Log in
+
+Check the repo at http://localhost:3000/courselabs/devsecops, you should see all the lab content
+
+Back to Jenkins, create a new job: http://localhost:8080/view/all/newJob
+
+- call it `manual-gate`
+- select _Pipeline_
+
+
+Under the _Pipeline_ section:
+
+- select _Pipeline script from SCM_ in the dropdown
+- SCM = _Git_
+- Repository URL = `http://gogs:3000/courselabs/devsecops.git`
+- Branch Specifier = `refs/heads/main`
+- Script path = `labs/jenkins/manual-gate/Jenkinsfile`
+
+The build is using this [Jenkinsfile](.\manual-gate\Jenkinsfile). It will pause after the _Test_stage and wait for user input.
+
+Save and run the build. In the job UI is it clear how you can progress the _Deploy_stage?
+
+: blue box _paused_; click and select _Do it!_
+
 
 ## Lab
 
-create new repo - devsecops
-- add remote
-- push to gogs
+create new pipeline to build a Java app
+from the Jenkinsfile in labs\jenkins\hello-world\Jenkinsfile, polling SCM for changes every minute.
 
-- create new pipeline to build java app (fix path in jenkinsfile)
-
-- could you build e.g. .net app?
+When the build runs it will fail. Can you see how to fix it? Where is the compiled app stored after a successful build?
 
