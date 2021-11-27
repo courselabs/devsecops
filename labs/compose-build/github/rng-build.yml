@@ -1,0 +1,37 @@
+name: RNG App Docker Image Weekly Build
+on:
+  workflow_dispatch:   
+  push:
+    paths:
+      - ".github/workflows/rng-build.yml"
+      - "labs/compose-build/rng/**"
+  schedule:
+    - cron: "0 4 * * 1"
+
+env:
+  RELEASE: 21.05
+  BUILD_NUMBER: ${{ github.run_number }}
+
+jobs:
+  image-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Docker Hub login
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}     
+
+      - name: Build and push with tag ${{ env.RELEASE }}-${{ env.BUILD_NUMBER }}
+        working-directory: labs/compose-build/rng
+        run: |
+          docker-compose -f core.yml -f build.yml -f args.yml build --pull
+          docker-compose -f core.yml -f build.yml -f args.yml push
+
+      - name: Build and push with tag ${{ env.RELEASE }}
+        working-directory: labs/compose-build/rng
+        run: |
+          docker-compose -f core.yml -f build.yml -f args.yml -f release.yml build --pull
+          docker-compose -f core.yml -f build.yml -f args.yml -f release.yml  push

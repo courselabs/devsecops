@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+    environment {
+      REPOSITORY="courselabs"
+      RELEASE="21.12"
+      GITHUB_SHA=${GIT_COMMIT}
+      GITHUB_WORKFLOW=${JOB_NAME}
+      GITHUB_REF=${GIT_BRANCH}
+    }
+    stages {
+        stage('Audit tools') {                        
+            steps {
+                sh '''
+                  docker version
+                  docker compose version
+                '''
+            }
+        }
+        stage('Build') {
+            steps {
+              echo "Building RNG images for release: ${RELEASE}"
+              dir ('labs/compose-build/rng') {
+                sh 'docker compose -f core.yml -f build.yml -f args.yml build --pull'
+              }
+            }
+        }
+        stage('Push') {
+          steps {
+            echo "Pushing RNG images for release: ${RELEASE}"
+            withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PASSWORD')]) {
+              sh '''
+                docker login --username ${REGISTRY_USER} --password ${REGISTRY_PASSWORD}
+                docker-compose -f core.yml -f build.yml -f args.yml push
+              '''
+            }
+          }
+        }
+    }    
+    post{
+      always {
+        sh 'docker logout'
+      }
+    }
+}

@@ -25,7 +25,7 @@ pipeline {
           steps {
               echo "Running Java container"
               sh '''
-                docker run ${IMAGE_TAG}
+                docker run --rm ${IMAGE_TAG}
               '''
             }
         }

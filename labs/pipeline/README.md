@@ -1,4 +1,14 @@
+TODO - add to Jenkins Dockerfile:
 
+
+```
+
+mkdir -p ~/.docker/cli-plugins/ && \
+
+wget -O ~/.docker/cli-plugins/docker-compose https://github.com/docker/compose/releases/download/v2.2.0/docker-compose-linux-x86_64   && \
+
+ chmod +x ~/.docker/cli-plugins/docker-compose
+```
 
 ## Building Docker Images with Jenkins
 
@@ -13,6 +23,7 @@ create repo devsecops
 git remote add gogs http://localhost:3000/courselabs/devsecops.git
 
 git push gogs main
+
 
 - jenkinsfile
 
@@ -38,11 +49,20 @@ Create a new pipeline
 
 ## Building with Docker Compose
 
-- rng app
+- rng app - compose file
+
+- new pipeline called compose
+- copy from `docker`
+- script path = `labs/pipeline/compose/Jenkinsfile`
+
 
 ## Pushing to Docker Hub
 
-- save creds
+- open global credentials store http://localhost:8080/credentials/store/system/domain/_/
+- add credential, type _Username with password_
+-- yoour username and password
+-- id `docker-hub`
+
 - uncomment push in jenkinsfile
 
 ## Lab
