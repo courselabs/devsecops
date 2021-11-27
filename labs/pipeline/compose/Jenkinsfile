@@ -3,9 +3,9 @@ pipeline {
     environment {
       REPOSITORY="courselabs"
       RELEASE="21.12"
-      GITHUB_SHA=${GIT_COMMIT}
-      GITHUB_WORKFLOW=${JOB_NAME}
-      GITHUB_REF=${GIT_BRANCH}
+      GITHUB_SHA="${GIT_COMMIT}"
+      GITHUB_WORKFLOW="${JOB_NAME}"
+      GITHUB_REF="${GIT_BRANCH}"
     }
     stages {
         stage('Audit tools') {                        
