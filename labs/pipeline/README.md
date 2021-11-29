@@ -109,3 +109,10 @@ Check the output - if you got the creds right, you should see a new image in Doc
 ## Lab
 
 - add release and  `latest` tags and push
+
+Goal - multiple tags, same digest:
+
+![](/img/pipeline-lab.png)
+
+Pull the latest iamge. Can you find the build information and Git hash from the metadata?
+
