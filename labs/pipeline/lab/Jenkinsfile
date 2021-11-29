@@ -42,8 +42,8 @@ pipeline {
               echo "Tagging latest images from: ${RELEASE}-${BUILD_NUMBER}"
               dir ('labs/compose-build/rng') {
                 sh '''
-                  docker compose -f core.yml -f build.yml -f args.yml -f release.yml build
-                  docker compose -f core.yml -f build.yml -f args.yml -f latest.yml build
+                  docker compose -f core.yml -f build.yml -f args.yml -f release.yml build --pull
+                  docker compose -f core.yml -f build.yml -f args.yml -f latest.yml build --pull
                 '''
               }
               withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PASSWORD')]) {
