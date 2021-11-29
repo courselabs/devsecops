@@ -28,10 +28,12 @@ pipeline {
           steps {
             echo "Pushing RNG images for release: ${RELEASE}"
             withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PASSWORD')]) {
-              sh '''
-                docker login --username ${REGISTRY_USER} --password ${REGISTRY_PASSWORD}
-                docker compose -f core.yml -f build.yml -f args.yml push
-              '''
+              dir ('labs/compose-build/rng') {
+                sh '''
+                  docker login --username ${REGISTRY_USER} --password ${REGISTRY_PASSWORD}
+                  docker compose -f core.yml -f build.yml -f args.yml push
+                '''
+              }
             }
           }
         }
