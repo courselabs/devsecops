@@ -96,10 +96,16 @@ Reg details are parameterised so any registry can be used.
 
 - uncomment push in jenkinsfile
 
-git add, commit, push
+```
+git add labs/pipeline/compose/Jenkinsfile        
+git commit -m 'Added push'
+git push gogs main
+```
 
-buid now
+build now
+
+Check the output - if you got the creds right, you should see a new image in Docker Hub with the version number of the build in the tag, e.g. https://hub.docker.com/repository/docker/courselabs/rng-api/tags?page=1&ordering=last_updated
 
 ## Lab
 
-- add `latest` tag and push
+- add release and  `latest` tags and push

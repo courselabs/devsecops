@@ -1,0 +1,6 @@
+services:
+  rng-api:
+    image: courselabs/rng-api
+
+  rng-web:
+    image: courselabs/rng-web
