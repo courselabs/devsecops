@@ -14,12 +14,12 @@ With this approach your whole build infrastructure is portable. You can run a Je
 
 ## Build a Simple Java Image
 
-We'll start by building [this Dockerfile](labs\pipeline\docker\Dockerfile), using [this Jenkinsfile](labs\pipeline\docker\Jenkinsfile). That will package a pre-built Java app into a Docker image and run a container from the image. If the build or the test stages fail then the pipeline fails.
+We'll start by building [this Dockerfile](./docker/Dockerfile), using [this Jenkinsfile](./docker/Jenkinsfile). That will package a pre-built Java app into a Docker image and run a container from the image. If the build or the test stages fail then the pipeline fails.
 
-Start by running Jenkins and Gogs using this [Docker Compose spec](labs\pipeline\infra\docker-compose.yml):
+Start by running Jenkins and Gogs using this [Docker Compose spec](./infra/docker-compose.yml):
 
 ```
-docker-compose -f labs\pipeline\infra\docker-compose.yml up -d
+docker-compose -f labs/pipeline/infra/docker-compose.yml up -d
 ```
 
 > The Jenkins service is configured to mount the Docker socket, which is how the container can talk to the Docker Engine where it's running.
@@ -83,9 +83,9 @@ This is a simple example, but we don't want to just package binaries into images
 
 There's nothing special about multi-stage builds - any Docker builds we can run on the laptop work just the same in the Jenkins container:
 
-- [multi-stage/Dockerfile](.\multi-stage\Dockerfile) - builds the same Java app from source, so we no longer need a separate compilation step
+- [multi-stage/Dockerfile](./multi-stage/Dockerfile) - builds the same Java app from source, so we no longer need a separate compilation step
 
-- [multi-stage/Jenkinsfile](.\multi-stage\Jenkinsfile) - builds the image using environment variables to generate the tag, then runs a test container
+- [multi-stage/Jenkinsfile](./multi-stage/Jenkinsfile) - builds the image using environment variables to generate the tag, then runs a test container
 
 Those files are already in your Gogs server, so you can create a new pipeline in Jenkins to run the script in `labs/pipeline/multi-stage/Jenkinsfile`.
 
@@ -130,9 +130,9 @@ This Jenkins container image also has the `docker compose` command installed, so
 
 We'll be building the random number app from source:
 
-- [compose/Jenkinsfile](.\compose\Jenkinsfile) - builds the app in the `labs/compose-build/rng` folder; the _Push_ stage is commented out so only the _Build_ stage will run
+- [compose/Jenkinsfile](./compose/Jenkinsfile) - builds the app in the `labs/compose-build/rng` folder; the _Push_ stage is commented out so only the _Build_ stage will run
 
-- [the API Dockerfile](../compose-build\rng\docker\api\Dockerfile) - is a multi-stage build using the .NET SDK and runtime images
+- [the API Dockerfile](../compose-build/rng/docker/api/Dockerfile) - is a multi-stage build using the .NET SDK and runtime images
 
 So this is a .NET app. To be sure we're not cheating, run this command inside the Jenkins container to confirm that .NET is not installed:
 
@@ -233,8 +233,8 @@ Docker image tags are typically used for versioning. Our images contain a releas
 
 There are some additional Compose overrides we can use to build images with the extra tags:
 
-- [labs\compose-build\rng\release.yml](..\compose-build\rng\release.yml)
-- [labs\compose-build\rng\latest.yml](..\compose-build\rng\latest.yml)
+- [labs/compose-build/rng/release.yml](../compose-build/rng/release.yml)
+- [labs/compose-build/rng/latest.yml](../compose-build/rng/latest.yml)
 
 Extend the [Jenkinsfile](compose/Jenkinsfile) to add those tags and push them to Docker Hub as part of the build. The goal is for each build to push the specific image tag and update the other tags, so they work as aliases for the same image digest:
 
@@ -251,4 +251,10 @@ Cleanup by removing all containers:
 
 ```
 docker rm -f $(docker ps -aq)
+```
+
+And remove the Gogs remote:
+
+```
+git remote rm gogs
 ```

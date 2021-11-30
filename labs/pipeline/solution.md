@@ -1,21 +1,30 @@
 # Lab Solution
 
+You can see my solution in [lab/Jenkinsfile](./lab/Jenkinsfile):
 
+- it adds a new stage to build and push latest tags
+- the new stage has a build step with two Compose commands, to build the release tags and another to build the latest tags
+- the second stage has two Compose commands, to push the release tags and the latest tags
 
-Change pipeline to script in `labs/pipeline/lab/Jenkinsfile`
+It might seem wasteful to build the images again, but you'll see that Docker uses caching extensively and the new builds happen super quickly.
 
-Build pushes specific build version, release version and latest.
+An alternative is to use the `docker image tag` command to add a new tag to an existing image and then pull it, but you can't use Compose with that so you'd need to hard-code the image names.
 
+This approach continues to work even if you add new images to your Compose files.
 
-My approach - separate build step, risks being out of date (small risk); means you still get the versioned build if there are other failures (debatable)
-
+Try pulling a `latest` image:
 
 ```
 docker pull courselabs/rng-api:latest
-
 ```
 
->
+Then you can inspect it:
+
+```
+docker inspect courselabs/rng-api:latest
+```
+
+In the labels you'll see the build tag and commit hash:
 
 ```
 "Labels": {
@@ -24,4 +33,4 @@ docker pull courselabs/rng-api:latest
             }
 ```
 
-Tag includes the Jenkins job name, build number and git branch 
+> The build tag includes the Jenkins job name, build number and git branch
