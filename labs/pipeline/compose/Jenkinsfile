@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-      REPOSITORY="courselabs"
+      REPOSITORY="sixeyed"
       RELEASE="21.12"
       GITHUB_SHA="${GIT_COMMIT}"
       GITHUB_WORKFLOW="${JOB_NAME}"
@@ -28,12 +28,10 @@ pipeline {
           steps {
             echo "Pushing RNG images for release: ${RELEASE}"
             withCredentials([usernamePassword(credentialsId: 'docker-hub', usernameVariable: 'REGISTRY_USER', passwordVariable: 'REGISTRY_PASSWORD')]) {
-              dir ('labs/compose-build/rng') {
-                sh '''
-                  docker login --username ${REGISTRY_USER} --password ${REGISTRY_PASSWORD}
-                  docker compose -f core.yml -f build.yml -f args.yml push
-                '''
-              }
+              sh '''
+                docker login --username ${REGISTRY_USER} --password ${REGISTRY_PASSWORD}
+                docker compose -f core.yml -f build.yml -f args.yml push
+              '''
             }
           }
         }
