@@ -206,7 +206,7 @@ Save and run the build. It will pause after the _Test_ stage and wait for user i
 
 You'll see boxes representing each stage of the pipeline - earlier stages are green to show they've suceeded. The _Deploy_ box is blue and it says _Paused_:
 
-![]()
+![](/img/jenkins-manual-gate.png)
 
 Click the blue box and you'll see the confirmation window with the options defined in the Jenkinsfile. Click _Do it!_ and the build will continue.
 
@@ -232,3 +232,18 @@ git push gogs
 ```
 
 > Stuck? Try [hints](hints.md) or check the [solution](solution.md).
+
+___
+## Cleanup
+
+Cleanup by removing all containers:
+
+```
+docker rm -f $(docker ps -aq)
+```
+
+And remove the Gogs remote:
+
+```
+git remote rm gogs
+```

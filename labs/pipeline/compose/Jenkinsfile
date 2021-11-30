@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-      REPOSITORY="sixeyed"
+      REPOSITORY="courselabs"
       RELEASE="21.12"
       GITHUB_SHA="${GIT_COMMIT}"
       GITHUB_WORKFLOW="${JOB_NAME}"
@@ -24,6 +24,7 @@ pipeline {
               }
             }
         }
+        /*
         stage('Push') {
           steps {
             echo "Pushing RNG images for release: ${RELEASE}" 
@@ -37,6 +38,7 @@ pipeline {
             }
           }
         }
+        */
     }    
     post{
       always {
