@@ -1,40 +1,30 @@
+# Lab Solution
 
-simplest is to copy the original job
+The simplest way is to copy the previous job:
 
-http://localhost:8080/view/all/newJob
+- browse to http://localhost:8080/view/all/newJob
+- set the job name to be `hello-world`
+- select _Pipeline_ as the job type
+- in the _Copy from_ box, enter `manual-gate`
 
-- name= hello-world
-- type=pipeline
-- copy from=manual-gate
-
-Under _Build triggers_ select _Poll SCM_ and enter this in the _Schedule_ box:
+In the build definintion, scroll to _Build triggers_ and select _Poll SCM_. That sets up a schedule to check for changes from the Git server; enter this in the _Schedule_ box:
 
 ```
 * * * * * 
 ```
 
-> This means Jenkins will check the Git repo every minute, and if there have been any changes since the last build then a new one is triggered
+> This means Jenkins will check the Git repo every minute, and if there have been any changes since the last build then a new one is triggered.
 
-change script path to `labs/jenkins/hello-world/Jenkinsfile`
+Change the script path to `labs/jenkins/hello-world/Jenkinsfile`, then save and build the job - it fails.
 
-save & build
-
-Check the logs - the test stage fails:
+Check the logs or the console output - the _Test_ stage fails with this log line:
 
 _Error: Could not find or load main class HelloWorkd.java_
 
-It's a typo :)
+`HelloWorkd`> Looks like a typo :)
 
-Change `HelloWorkd.java` to `HelloWorld.java` in the file labs/jenkins/hello-world/Jenkinsfile 
+Change the line `java HelloWorkd` in the Jenkinsfile to `java HelloWorld` in the file `labs/jenkins/hello-world/Jenkinsfile`. My fixes are in [this Jenkinsfile](./lab\Jenkinsfile)
 
-then commit and push your changes:
+Then commit and push your changes. Back in Jenkins, wait for the build to trigger from the SCM change (or click _Build Now_). 
 
-```
-git add labs/jenkins/hello-world/Jenkinsfile
-
-git commit -m 'Lab solution'
-
-git push labs-jenkins
-```
-
-Back in Jenkins, wait for the build to trigger from the SCM change (or click _Build Now_). All will be well. Check the output page for the build and you'll see a list of archived artifacts, containing the Java class file.
+All will be well. Check the output page for the build and you'll see a list of archived artifacts, containing the Java class file.
