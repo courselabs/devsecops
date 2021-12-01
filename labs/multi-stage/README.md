@@ -197,6 +197,17 @@ curl localhost:<port>
 
 > The server just prints some details about the environment and the request.
 
+The container is running from a minimal image - there's nothing in the image which isn't necessary for the app to run. 
+
+This helps minimize the attack surface of the application - try connecting to a shell session in the container:
+
+```
+# this will fail
+docker exec -it whoami1 sh
+```
+
+There's no shell, so if an attacker compromised the application they'd have more work to do before they could launch an exploit.
+
 ## Lab
 
 Apps need special Linux permissions to listen on the standard HTTP ports - even inside a container.

@@ -77,7 +77,7 @@ In the _Test_ stage logs you'll see the container output is the string `Hello, W
 
 </details>
 
-This is a simple example, but we don't want to just package binaries into images - we want to build them from source code, which we can do with a multi-stage builds.
+This is a simple example, but we don't want to just package binaries into images - we want to build them from source code, which we can do with a multi-stage build.
 
 ## Multi-stage Builds in Jenkins
 
@@ -137,7 +137,7 @@ We'll be building the random number app from source:
 So this is a .NET app. To be sure we're not cheating, run this command inside the Jenkins container to confirm that .NET is not installed:
 
 ```
-# will fail
+# this will fail
 docker exec infra_jenkins_1 dotnet --version
 ```
 
@@ -192,14 +192,16 @@ Now create a credential in Jenkins:
 Next edit the [Jenkinsfile](compose/Jenkinsfile):
 
 - replace the value of the environment variable `REPOSITORY="courselabs"` with your own Docker Hub ID
-- e.g. my Hub ID is `sixeyed` so my updated setting will read `REPOSITORY="sixeyed"`
+- _e.g. my Hub ID is `sixeyed` so my updated setting will read `REPOSITORY="sixeyed"`_
 - uncomment the _Push_ stage - delete the start `/*` and end `*/` comments
 
 Push your changes:
 
 ```
-git add labs/pipeline/compose/Jenkinsfile        
+git add labs/pipeline/compose/Jenkinsfile  
+
 git commit -m 'Added push'
+
 git push gogs main
 ```
 

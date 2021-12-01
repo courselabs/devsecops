@@ -181,8 +181,10 @@ This Dockerfile bundles some custom HTML content on top of the official Nginx im
 - [custom HTML page](./web/index.html)
 
 ```
-docker build -t courselabs/web ./labs/images/web
+docker build -t courselabs/web ./labs/images/web --pull
 ```
+
+> The `pull` argument tells Docker to download the latest version of the FROM image before it starts the build.
 
 - the folder path is called the *context* - it contains the Dockerfile and any files it references, the `index.html` file in this case
 
@@ -201,6 +203,51 @@ curl localhost:8090
 </details><br/>
 
 > The container serves your HTML document, using the Nginx setup configured in the official image 
+
+Docker images are composed of _layers_. An image is one logical package, but it's physically stored as multiple small files, which are the layers. 
+
+Layers are read-only and they can be shared between images - if you build your images correctly you'll get very efficient use of disk space and network bandwidth.
+
+Inspect your web image and you'll see the layer IDs at the end of the output:
+
+```
+docker inspect courselabs/web
+```
+
+📋 Inspect the image which your web image is based from. Do they have any shared layers? How about the image *that* image is based on?
+
+<details>
+  <summary>Not sure how?</summary>
+
+The base image is Nginx running on Alpine:
+
+```
+docker pull nginx:1.21.4-alpine
+
+docker inspect nginx:1.21.4-alpine
+```
+
+And you can check Alpine too:
+
+```
+docker pull alpine:3.14
+
+docker inspect alpine:3.14
+```
+
+</details><br/>
+
+> You can see all the shared layers - the web image builds on top of the Nginx layers, and the Nginx image builds on top of the Alpine layers.
+
+Here's the full image hierarchy:
+
+```
+alpine:3.14
+└─ nginx:1.21.4-alpine
+    └─ courselabs/web 
+```
+
+Some images include the full audit in their tag - e.g. `golang:1.17.3-alpine3.15`. The Nginx tag doesn't include the Alpine OS version, so you need to figure that out by trial and error (or knowing which OS version was current when the image was built).
 
 ## Lab
 

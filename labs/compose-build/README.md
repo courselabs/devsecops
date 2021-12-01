@@ -27,7 +27,7 @@ docker-compose push --help
 
 All the source code for the random number app we've been usingis in the `rng` folder, along with the Dockerfile and a Compose file: 
 
-- [rng\docker-compose.yml](.\rng\docker-compose.yml) - includes the context and Dockerfile paths
+- [rng/docker-compose.yml](./rng/docker-compose.yml) - includes the context and Dockerfile paths
 
 All paths in Compose are relative to the location of the Compose file. 
 
@@ -74,8 +74,6 @@ A single Compose file to build and run your app is very appealing, but run and b
 And with some additional config you can add some useful auditing to your images:
 
 - the [rng API Dockerfile](./rng/docker/api/Dockerfile) uses `ARG` instructions - which are values you can set as build arguments - to add metadata to the image, using labels to record the build version and Git commit ID 
-
-- _we haven't covered all the details of how this Dockerfile works - we'll do that in [multi-stage builds](../multi-stage/README.md)_
 
 - [args.yml](./rng/args.yml) overrides the image name and sets default values for the build arguments. All the `${VARIABLES}`  can be overridden by environment variables on the machine running the build.
 
@@ -135,9 +133,9 @@ Compose is great for running lots of non-production environments on a single mac
 
 This repo also has a GitHub Actions workflow to build the RNG images using the same Docker Compose files you've been using locally:
 
-- [rng-build.yml](../../.github/workflows/rng-build.yml) - GitHub workflows use a YAML spec, but if you're not familiar with them you'll see the same `docker-compose` commands being executed.
+- [rng-build.yml](./github/rng-build.yml) - GitHub workflows use a YAML spec, but if you're not familiar with them you'll see the same `docker-compose` commands being executed.
 
-This is a public repo so you can browse to the workflow output:
+The real images are in a public repo so you can browse to the workflow output:
 
 https://github.com/courselabs/docker/actions/workflows/rng-build.yml
 
@@ -147,10 +145,10 @@ https://github.com/courselabs/docker/actions/workflows/rng-build.yml
   <summary>Not sure how?</summary>
 
 ```
-# the build version is appended to the image tag, e.g for build 33:
-docker pull courselabs/rng-api:21.05-33
+# the build version is appended to the image tag, e.g for build 39:
+docker pull courselabs/rng-api:21.05-39
 
-docker image inspect courselabs/rng-api:21.05-33
+docker image inspect courselabs/rng-api:21.05-39
 ```
 
 </details><br/>
@@ -174,7 +172,7 @@ Look closely at the GitHub workflow and you'll see it runs two sets of builds an
 
 What is the difference when you use the extra Compose file and why does the workflow run this second build?
 
-Pull the API image from the tag in the second build and check if it's the same as the tag `21.05-33`.
+Pull the API image from the tag in the second build and check if it's the same as the tag `21.05-39`.
 
 > Stuck? Try [hints](hints.md) or check the [solution](solution.md).
 
@@ -186,4 +184,13 @@ Cleanup by removing all containers:
 ```
 docker rm -f $(docker ps -aq)
 ```
----
+
+And if you're not in the `devsecops` root directory, change back to it:
+
+```
+cd ../../..
+
+pwd
+
+# make sure you're in the `devsecops` folder
+```
