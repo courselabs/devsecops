@@ -1,0 +1,22 @@
+version: "3.7"
+
+services:  
+  java-jre-alpine:
+    image: courselabs/java:jre-21.12
+    build:
+      context: ./java/alpine/jre
+
+  java-jdk-alpine:
+    image: courselabs/java:jdk-21.12
+    build:
+      context: ./java/alpine/jdk
+
+  java-jre-debian:
+    image: courselabs/java:jre-debian-21.12
+    build:
+      context: ./java/debian/jre
+
+  java-jdk-debian:
+    image: courselabs/java:jdk-debian-21.12
+    build:
+      context: ./java/debian/jdk

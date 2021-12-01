@@ -31,6 +31,7 @@ These are hands-on resources to help you learn DevOps and DevSecOps practices.
 
 ## Security in Depth
 
+- [Static analysis](./labs/static-analysis/README.md)
 - [Security scanning](./labs/scanning/README.md)
 - [Building a golden image library](./labs/golden-images/README.md)
 - [Container security controls](./labs/container-security/README.md)

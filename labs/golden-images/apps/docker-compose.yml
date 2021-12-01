@@ -1,0 +1,14 @@
+version: "3.7"
+
+services:  
+  app1:
+    image: courselabs/app-1:v1
+    build:
+      context: ./app-1
+      dockerfile: Dockerfile
+
+  app2:
+    image: courselabs/app-2:v1
+    build:
+      context: ./app-2
+      dockerfile: Dockerfile
