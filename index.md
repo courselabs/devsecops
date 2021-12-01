@@ -16,6 +16,7 @@ These are hands-on resources to help you learn DevOps and DevSecOps practices.
 
 - [Using Jenkins and Jenkinsfiles](labs/jenkins/README.md)
 - [Building container images](labs/images/README.md)
+- [Using image registries](labs/registries/README.md)
 - [Multi-stage builds](labs/multi-stage/README.md)
 - [Building distributed apps](labs/compose-build/README.md)
 - [CI/CD with Jenkins](labs/pipeline/README.md) 
