@@ -2,18 +2,6 @@ version: "3.7"
 
 services:
 
-  gogs:
-    image: courselabs/gogs:0.12.3
-    ports:
-      - "3000:3000"
-
-  jenkins:
-    image: courselabs/jenkins
-    ports:
-      - "8080:8080"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-
   sonarqube:
     image: sonarqube:8.9.3-community
     environment:
