@@ -9,7 +9,7 @@ References
 
 
 
-££ Image Scanning with Trivy
+## Image Scanning with Trivy
 
 Run a Trivy container:
 
@@ -40,7 +40,7 @@ Lots! Including this [buffer over-read vulnerability](https://avd.aquasec.com/nv
 
 
 
-££ Library Scanning
+## Library Scanning
 
 Public repos only:
 
@@ -50,7 +50,7 @@ trivy repository https://github.com/sixeyed/kiamol
 
 > Critical issue with the AWS SDK...
 
-££ Infrastructure-as-Code Scanning
+## Infrastructure-as-Code Scanning
 
 ```
 trivy config /src/labs/scanning/docker
@@ -63,7 +63,7 @@ trivy config /src/labs/scanning/kubernetes
 ```
 
 
-££ Running Trivy in Jenkins Pipelines
+## Running Trivy in Jenkins Pipelines
 
 
 pipeline stage:
@@ -78,6 +78,6 @@ trivy config --exit-code 1 --severity HIGH /src/labs/scanning
 
 3 - scan k8s before deploy
 
-££ Lab
+## Lab
 
 Fix the build...
