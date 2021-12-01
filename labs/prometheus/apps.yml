@@ -26,4 +26,4 @@ services:
 networks: 
   fulfilment:
   metrics:
-    name: obsfun-metrics
+    name: metrics

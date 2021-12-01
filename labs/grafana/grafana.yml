@@ -20,4 +20,4 @@ services:
 
 networks: 
   metrics:
-    name: obsfun-metrics
+    name: metrics

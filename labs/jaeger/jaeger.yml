@@ -10,4 +10,4 @@ services:
 
 networks:
   tracing:
-    name: obsfun-tracing
+    name: tracing

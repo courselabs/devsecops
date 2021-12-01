@@ -27,4 +27,4 @@ services:
 
 networks:
   logging:
-    name: obsfun-logging
+    name: logging
