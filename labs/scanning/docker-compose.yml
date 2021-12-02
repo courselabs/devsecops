@@ -1,0 +1,12 @@
+version: "3.7"
+
+services:
+
+  trivy:
+    image: aquasec/trivy:0.21.1
+    entrypoint: /bin/sh
+    stdin_open: true 
+    tty: true  
+    volumes:
+      - ../:/labs      
+      - /var/run/docker.sock:/var/run/docker.sock

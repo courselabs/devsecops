@@ -1,6 +1,6 @@
 # Static Code Analysis
 
-Static analysis tools inspect the source code of your applications, looking for known issues. The tools use a database of issues which can include poor coding practices, code which is difficult to maintain, and known security problems. [SonarQube]() is one of the most popular analysers. It supports multiple languages with databases which include best practices and CVEs.
+Static analysis tools inspect the source code of your applications, looking for known issues. The tools use a database of issues which can include poor coding practices, code which is difficult to maintain, and known security problems. [SonarQube](https://www.sonarqube.org) is one of the most popular analysers. It supports multiple languages with databases which include best practices and CVEs.
 
 There are commercial versions of SonarQube but we'll run the free community edition. It runs as a server, and you can trigger the analysis when you build your code. A SonarQube client on your dektop or build server sends the code for analysis and prints the results. Any issues are stored in the SonarQube server, and you can configure critical issues to fail the build.
 
@@ -13,6 +13,8 @@ There are commercial versions of SonarQube but we'll run the free community edit
 - [SonarQube with .NET apps](https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-msbuild/)
 
 - [SonarQube with Java apps and Maven](https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-maven/)
+
+- [SonarQube in the CNCF DevSecOps radar](https://radar.cncf.io/2021-09-devsecops)
 
 ## Run Sonarqube
 
@@ -87,7 +89,7 @@ SONAR_TOKEN='<your-token>'
 $SONAR_TOKEN='<your-token>'
 ```
 
-Now we can pass the token as a build argument for this [.NET Dockerfile](.\hello-world-cs\Dockerfile):
+Now we can pass the token as a build argument for this [.NET Dockerfile](./hello-world-cs/Dockerfile):
 
 - this builds a simple Hello World app, with optional SonarQube analysis
 
@@ -144,7 +146,7 @@ Now we can set the .NET project to use that quality gate, and the analysis will 
 - click _Project Settings_ dropdown in top-right and select _Quality Gate_
 - select _Always use a Specific Quality Gate_ and select your new `courselabs` gate
 
-The build arguments in the [Dockerfile](.\hello-world-cs\Dockerfile) allow you to set whether a failed analysis check should fail the build. 
+The build arguments in the [Dockerfile](./hello-world-cs/Dockerfile) allow you to set whether a failed analysis check should fail the build. 
 
 📋 Run the Docker build so it fails if the SonarQube check fails.
 
@@ -177,7 +179,7 @@ Now the build fails. If the Dockerfile included a unit test stage, it would run 
 
 Your turn to analyse a project - we'll use a Java version of a Hello World app:
 
-- [hello-world-java\Dockerfile](.\hello-world-java\Dockerfile) - is a multi-stage build which uses Maven. It's configured to run SonarQube using the same set of build args as the .NET app from the exercises
+- [hello-world-java/Dockerfile](./hello-world-java/Dockerfile) - is a multi-stage build which uses Maven. It's configured to run SonarQube using the same set of build args as the .NET app from the exercises
 
 Start by running the build with analysis enabled - **you don't need to create a project in SonarQube**, it will create the project when the analysis is triggered from Docker. How does the app look? Next set the new project to use your `courselabs` quality gate and run the build again with checks enforced. Do you get an image this time?
 
