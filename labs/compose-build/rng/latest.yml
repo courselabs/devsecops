@@ -1,6 +1,6 @@
 services:
   rng-api:
-    image: courselabs/rng-api
+    image: ${REPOSITORY:-courselabs}/rng-api
 
   rng-web:
-    image: courselabs/rng-web
+    image: ${REPOSITORY:-courselabs}/rng-web
