@@ -137,9 +137,9 @@ The application components use OpenTelemetry libraries to record and send trace 
 
 None of the apps required any extra code to collect and send traces, other than wiring in the instrumentation library:
 
-- for the .NET app that's done in the `AddTracing` extension method in the [Tracing](../../src/fulfilment-frontend/Fulfilment.Core/Services/Tracing.cs) class
+- for the .NET app that's done in the `AddTracing` extension method in the [Tracing](https://github.com/courselabs/fulfilment/blob/main/src/fulfilment-frontend/Fulfilment.Core/Services/Tracing.cs#L11) class
 
-- for the Spring Boot app it's done without code by using the `opentracing-spring-jaeger-web-starter` package, referenced in [pom.xml](../../src/fulfilment-api/pom.xml)
+- for the Spring Boot app it's done without code by using the `opentracing-spring-jaeger-web-starter` package, referenced in [pom.xml](https://github.com/courselabs/fulfilment/blob/main/src/fulfilment-api/pom.xml#L42)
 
 ## Lab
 
