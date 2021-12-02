@@ -178,6 +178,19 @@ Click _Apply_.
 
 That's better - the dashboard now shows current and historical status for all the instances. We can see there's a recurring problem with processor 1, which isn't clear from the table alone.
 
+
+## A Real Dashboard
+
+Grafana can be fiddly to work with - but once you have your dashboard designed, you can load it into any Grafana server.
+
+In the lab we'll carry on with a custom dashboard, but so you can see what a real dashboard looks like, there's one stored in the file `labs/grafana/dashboards/app.json` you can load:
+
+- click the plus `+` icon from the left nav and choose _Import_
+- click _Upload JSON file_ and navigate to the path for the `app.json` file
+- click _Import_
+
+These visualizations are all powered by the metrics from the container apps you have running. You can reduce the timescale from the dropdown in the top-right and show metrics from the last 30 minutes to see how Grafana shows trends.
+
 ## Lab
 
 You'll have several dashboards for your apps, showing information at different levels.

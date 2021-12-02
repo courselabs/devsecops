@@ -13,7 +13,7 @@ curl -H "traceparent: 00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01" l
 Check the logs for the web app:
 
 ```
-docker logs obsfun_fulfilment-web_1 -n 22
+docker logs courselabs_fulfilment-web_1 -n 22
 ```
 
 You'll see a final log like this, which is the server span for the curl call:
@@ -43,7 +43,7 @@ The span ID starts with `00-0af7651916cd43dd8448eb211c80319c`, which is the trac
 Check the API logs:
 
 ```
-docker logs obsfun_fulfilment-api_1 -n 1
+docker logs courselabs_fulfilment-api_1 -n 1
 ```
 
 You'll see a final log entry like this:

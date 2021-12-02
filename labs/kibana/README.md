@@ -21,7 +21,7 @@ Start the containers and watch the Kibana logs:
 ```
 docker-compose -f labs/kibana/compose.yml up -d
 
-docker logs obsfun_kibana_1 -f
+docker logs courselabs_kibana_1 -f
 ```
 
 You'll see some error logs while Elasticsearch is starting, but the final log line will be something like:
@@ -174,7 +174,7 @@ For each index pattern you need to specify a _primary time field_, which Kibana 
 When the index pattern is created you're shown the field list - this is the
 superset of all fields in all documents in all the matching indices.
 
-Browse to the _Discover_ tab from the main menu. Your `logs-*` index pattern should be selected as the default, but there are no results. Click the calendar icon in the top right and expand the date range to include June 2021, e.g. _Last 90 days_.
+Browse to the _Discover_ tab from the main menu. Your `logs-*` index pattern should be selected as the default, but there are no results. Click the calendar icon in the top right and expand the date range to include June 2021, e.g. _Last 1 year_.
 
 You'll see both documents with a graph showing the number of documents created over time:
 

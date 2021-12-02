@@ -26,7 +26,7 @@ docker-compose -f labs/elasticsearch/compose.yml up -d
 Check the logs and you'll see Elasticsearch starting up:
 
 ```
-docker logs obsfun_elasticsearch_1 
+docker logs courselabs_elasticsearch_1 
 ```
 
 > These are semi-structured logs

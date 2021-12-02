@@ -31,7 +31,7 @@ The default page lets you query metrics - we'll do that shortly. First check som
 
 None of the targets we want to monitor are running, but Prometheus will keep trying to find them.
 
-This [Docker Compose file (apps.yml)](./apps.yml) starts all the apps we used in the [metrics lab](../metrics/README.md). The containers will connect to the same Docker network as Prometheus, and they're using the DNS names Prometheus is expecting to find.
+This [Docker Compose file (apps.yml)](./apps.yml) starts some sample apps which app publish metrics. The containers will connect to the same Docker network as Prometheus, and they're using the DNS names Prometheus is expecting to find.
 
 Run the apps:
 

@@ -1,6 +1,5 @@
 # Lab Solution
 
-
 ## Bulk load the logs
 
 Make a POST request to the index's `_bulk` endpoint:

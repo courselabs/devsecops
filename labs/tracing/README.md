@@ -21,7 +21,7 @@ Start by running the app and checking the logs:
 ```
 docker-compose -f labs/tracing/web.yml up -d
 
-docker logs -f obsfun_fulfilment-web_1
+docker logs -f courselabs_fulfilment-web_1
 ```
 
 > This command follows the logs, you can leave it running while we use the app
@@ -114,7 +114,7 @@ Run the API container and check its logs:
 ```
 docker-compose -f labs/tracing/api.yml up -d
 
-docker logs -f obsfun_fulfilment-api_1
+docker logs -f courselabs_fulfilment-api_1
 ```
 
 > This is a Java Spring Boot application. You'll see a lot of startup logs.
@@ -164,7 +164,7 @@ Check the trace logs in the web container to find the trace ID from your API log
 ```
 # Ctrl-C to exit the logs of the API
 
-docker logs obsfun_fulfilment-web_1
+docker logs courselabs_fulfilment-web_1
 ```
 
 Scroll up to the client trace where the web application calls the API, and you'll see an entry like this:
