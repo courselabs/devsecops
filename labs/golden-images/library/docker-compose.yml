@@ -5,11 +5,17 @@ services:
     image: courselabs/java:jre-21.12
     build:
       context: ./java/alpine/jre
+      args:
+        ALPINE_VERSION: '3.15'
+        OPENJDK_VERSION: '11.0.13_p8-r0'
 
   java-jdk-alpine:
     image: courselabs/java:jdk-21.12
     build:
       context: ./java/alpine/jdk
+      args:
+        ALPINE_VERSION: '3.15'
+        OPENJDK_VERSION: '11.0.13_p8-r0'
 
   java-jre-debian:
     image: courselabs/java:jre-debian-21.12
