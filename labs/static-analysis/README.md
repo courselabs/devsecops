@@ -10,9 +10,9 @@ There are commercial versions of SonarQube but we'll run the free community edit
 
 - [Try out SonarQube](https://docs.sonarqube.org/latest/setup/get-started-2-minutes/)
 
-- [SonarQube with .NET apps]()
+- [SonarQube with .NET apps](https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-msbuild/)
 
-- [SonarQube with Java apps and Maven]()
+- [SonarQube with Java apps and Maven](https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-maven/)
 
 ## Run Sonarqube
 
@@ -29,13 +29,22 @@ SonarQube can take a minute or two to spin up. When the container is running, lo
 
 It will ask you to set new password, `admin2` is fine.
 
-This is a new SonarQube server with no projects set up, but you can browse the rules it uses:
+This is a new SonarQube server with no projects set up, but you can browse the rules it uses.
+
+📋 Can you find some security vulnerability checks for .NET apps?
+
+<details>
+  <summary>Not sure how?</summary>
+
+The coding rules in the UI show helpful documentation for all the rules:
 
 - http://localhost:9000/coding_rules - coding rules for multiple languages and analysis types
 
 - http://localhost:9000/coding_rules?languages=cs&types=VULNERABILITY - security vulnerabilities for C# apps
 
 - http://localhost:9000/coding_rules?languages=cs&open=csharpsquid%3AS5445&types=VULNERABILITY - a known OWASP vulnerabilty for C#
+
+</details>
 
 Just browsing the rules for your language can help you write better and more secure code :)
 
@@ -89,8 +98,8 @@ Now we can pass the token as a build argument for this [.NET Dockerfile](.\hello
 ```
 docker build -t hello-world-cs --build-arg SONAR_TOKEN=$SONAR_TOKEN ./labs/static-analysis/hello-world-cs
 
-£ if you're using Linux then the `host.docker.internal` address may not be set
-£ you can run this instead:
+# if you're using Linux then the `host.docker.internal` address may not be set -
+# you can run this instead:
 export DOCKER_BUILDKIT=0
 
 docker build -t hello-world-cs --build-arg SONAR_TOKEN=$SONAR_TOKEN --build-arg SONAR_URL=http://sonarqube:9000 --network infra_default ./labs/static-analysis/hello-world-cs
@@ -98,51 +107,86 @@ docker build -t hello-world-cs --build-arg SONAR_TOKEN=$SONAR_TOKEN --build-arg 
 
 When the build completes, it sends the results to the SonarQube server where they get stored for the project.
 
-Check the project in the UI - how does it look?
+📋 Check the project in SonarQube - how does it look?
+
+<details>
+  <summary>Not sure?</summary>
+
+You can see all the details in the UI:
 
 - overall project status - http://localhost:9000/dashboard?id=hello-world-cs
 - issues - http://localhost:9000/project/issues?id=hello-world-cs&resolved=false
 - security hotspots - http://localhost:9000/security_hotspots?id=hello-world-cs
 
+</details>
 
 ## Failing Builds with Quality Gates
 
-http://localhost:9000/quality_gates/
+There are a few issues with the project. Ideally we want the build to fail if there are significant security issues. We can do that by setting a [quality gate](https://docs.sonarqube.org/latest/user-guide/quality-gates/). The gate specifies the conditions the project needs to meet for it to pass analysis.
 
-Copy the default _Sonar way_ gate; call the new gate `courselabs`
+Browse to http://localhost:9000/quality_gates/. You'll see a default gate already there called _Sonar way_. This only operates on new code - changes which have been made since the previous analysis. We want a quality gate which runs on all code:
 
-Default conditions are only for new code;
+- click _Copy_ to copy the default gate
+- call the new gate `courselabs`
+- click _Add Condition_
+- select to run _On Overall Code_
+- in the dropdown choose _Security Rating_
+- for the operator select worse than _A_
+- click _Add Condition_
 
-click _Add Condition_
-select _On Overall Code_
-dropdown choose _Security Rating_
-operator select worse than _A_
-click _Add Condition_
+Your new quality gate should look like this:
 
-Brose back to cs proj http://localhost:9000/dashboard?id=hello-world
+![](/img/static-analysis-gate.png)
 
-Click _Project Settings_ dropdown in top-right and select _Quality Gate_
-Select _Always use a Specific Quality Gate_ and select your new `courselabs` gate
+Now we can set the .NET project to use that quality gate, and the analysis will fail if the overall security rating is too low.
 
-Now repeat the build with gate enforcement:
+- browse back to the project at http://localhost:9000/dashboard?id=hello-world
+- click _Project Settings_ dropdown in top-right and select _Quality Gate_
+- select _Always use a Specific Quality Gate_ and select your new `courselabs` gate
+
+The build arguments in the [Dockerfile](.\hello-world-cs\Dockerfile) allow you to set whether a failed analysis check should fail the build. 
+
+📋 Run the Docker build so it fails if the SonarQube check fails.
+
+<details>
+  <summary>Not sure how?</summary>
+
+The argument to set is called `SONAR_ENFORCE_GATE`.
+
+With Docker Desktop:
 
 ```
 docker build -t hello-world-cs --build-arg SONAR_TOKEN=$SONAR_TOKEN --build-arg SONAR_ENFORCE_GATE=true ./labs/static-analysis/hello-world-cs
 ```
 
-> Build fails; downside - rules are outside of SCM so you could fetch an old version and build and not get the same output if the rules have changed
+Or with Docker Engine on Linux:
+
+```
+export DOCKER_BUILDKIT=0
+
+docker build -t hello-world-cs --build-arg SONAR_TOKEN=$SONAR_TOKEN --build-arg SONAR_ENFORCE_GATE=true --build-arg SONAR_URL=http://sonarqube:9000 --network infra_default ./labs/static-analysis/hello-world-cs
+```
+
+</details><br/>
+
+Now the build fails. If the Dockerfile included a unit test stage, it would run after analysis and it would also fail if any tests failed. That means if we have an image which was created from the build then it must have passed all the tests and the security analysis.
+
+> The downside is that the rules are outside of SCM so you could fetch an old version of the code, build it and not get the same output if the rules have changed.
 
 ## Lab
 
-Java Hello World
+Your turn to analyse a project - we'll use a Java version of a Hello World app:
 
-- don't need to create a project
+- [hello-world-java\Dockerfile](.\hello-world-java\Dockerfile) - is a multi-stage build which uses Maven. It's configured to run SonarQube using the same set of build args as the .NET app from the exercises
 
-docker build -t hello-world-java --build-arg SONAR_TOKEN=$SONAR_TOKEN ./labs/static-analysis/hello-world-java
+Start by running the build with analysis enabled - **you don't need to create a project in SonarQube**, it will create the project when the analysis is triggered from Docker. How does the app look? Next set the new project to use your `courselabs` quality gate and run the build again with checks enforced. Do you get an image this time?
 
-- configure project to use the custom gate
+> Stuck? Try [hints](hints.md) or check the [solution](solution.md).
+___
+## Cleanup
 
-- run build so gate is enforced
+Cleanup by removing all containers:
 
-docker build -t hello-world-java --build-arg SONAR_TOKEN=$SONAR_TOKEN --build-arg SONAR_ENFORCE_GATE=true  ./labs/static-analysis/hello-world-java
-
+```
+docker rm -f $(docker ps -aq)
+```

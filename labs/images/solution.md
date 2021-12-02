@@ -9,10 +9,10 @@ It just creates a working directory called `/app` in the container filesystem, a
 The class file and the Dockerfile are in different directories, so you need to use a context where Docker can access both files:
 
 ```
-- labs
-|- images   <- this is the context
- |-- java   <- so Docker can get the class file from here
- |-- lab    <- and the Dockerfile from here
+labs
+└─ images   <- this is the context
+   └─  java   <- so Docker can get the class file from here
+   └─  lab    <- and the Dockerfile from here
 ```
 Build the image using that context and specifying the path to the Dockerfile:
 
