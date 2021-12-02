@@ -52,20 +52,14 @@ Deploy the server components:
 kubectl apply -n argocd -f labs/argo/specs/argocd
 ```
 
-The CustomResourceDefinition is just like any object in Kubernetes - you can work with the definition in Kubectl:
-
-```
-kubectl get customresourcedefinitions -n argocd 
-
-kubectl describe crd applications.argoproj.io -n argocd
-```
-
-> There's a lot of detail in the output - the CRD contains the object schema - but it ends with the kind, which is the name of the resource.
+Argo installs a new custom object type called _Application_.
 
 📋 List all of the application objects in the default namespace.
 
 <details>
   <summary>Not sure how?</summary>
+
+Custom objects can be used in Kubectl like ordinary objects:
 
 ```
 kubectl get applications -n default
@@ -123,10 +117,10 @@ argocd cluster list
 
 > You can add new clusters to deploy to a remote Kubernetes cluster. Apps can be managed with the CLI or with the UI.
 
-Create an application for the whomi app in the `labs/argo/project/helm/whoami` folder - that folder contains a simple Helm chart for the app:
+Create an application for the app in the `labs/argo/project/whoami` folder - that folder contains a simple whoami app spec:
 
 ```
-argocd app create whoami --repo http://gogs.infra.svc.cluster.local:3000/kiamol/kiamol.git --path labs/argo/project/helm/whoami --dest-server https://kubernetes.default.svc --dest-namespace whoami
+argocd app create whoami --repo http://gogs.infra.svc.cluster.local:3000/kiamol/kiamol.git --path labs/argo/project/whoami --dest-server https://kubernetes.default.svc --sync-policy auto --self-heal
 ```
 
 > Creating the app doesn't deploy it.
@@ -157,71 +151,34 @@ argocd app get whoami
 
 Check the new application in the UI at https://localhost:30881/applications. You'll see the status is _OutOfSync_ which means the application in the cluster is not in sync with the definition in source.
 
-Select the whoami app and you can see the resources it defines, even though it's not running yet. Click _App Details_ then _Paramaters_ - these are all read from the Helm chart, and can be edited here (which defies the point of GitOps really...)
  
 ## Deploy the app
 
 ArgoCD deploys apps when you sync them.
 
-Try this to deploy the whoami app - it will fail:
+Run this to deploy the whoami app:
 
 ```
 argocd app sync whoami
 ```
 
-📋 Why does the deployment fail?
+> Check the application rollout at https://localhost:30881/applications
 
-<details>
-  <summary>Not sure?</summary>
-
-The app is set to deploy to a namespace called whoami, but that namespace doesn't exist.
-
-</details><br/>
-
-Applications can be created with the CLI or the UI - but they're just Kubernetes objects and can be specified in YAML instead:
-
-- [whoami/app.yaml](./specs/whoami/app.yaml) - updates the app spec to create the namespace and to use [self-healing](https://argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/#automatic-self-healing), so the app will automatically keep in sync with the repo even if an admin changes something in the cluster
-
-Update the app spec:
-
-```
-kubectl apply -f labs/argo/specs/whoami
-```
-
-> You'll see a warning because the resource wasn't originally created with Kubectl, but the update does happen.
-
-📋 Open a second terminal to watch the ReplicaSets for the app, then try syncing it again with the Argo CLI.
-
-<details>
-  <summary>Not sure how?</summary>
-
-There won't be any ReplicaSets to start with:
-
-```
-kubectl get rs -o wide -n whoami --watch
-```
-
-Repeat the sync command and you'll see the ReplicaSet created and two Pods come online:
-
-```
-argocd app sync whoami
-```
-
-</details><br/>
-
-ArgoCD has deployed the app from the Helm chart in the repo - with no pipeline or scripts to maintain. You can test the app at http://localhost:30820.
+ArgoCD deploys the app from the YAML specs in the repo - with no pipeline or scripts to maintain. You can test the app at http://localhost:30820.
 
 
-## Update the app
+## Lab
 
-Now let's see GitOps in action, making a change to the image tag for the app
+Now let's see GitOps in action, making a change to the Docker image tag for the app, so it triggers a rollout with new Pods.
 
-Edit the Helm [values.yaml](./project/helm/whoami/values.yaml) file and make two changes:
+Edit the Kubernetes [deployment.yaml](./project/whoami/deployment.yaml) file and make two changes:
 
-- set the image tag to `docker.io/courselabs/whoami-lab:21.09-4`
+- set the image tag to `courselabs/whoami-lab:21.09-4`
 - set the replica count to 3
 
-📋 Trigger the update by pushing your changes to the local Git server.
+Trigger the update by pushing your changes to the local Git server.
+
+
 
 <details>
   <summary>Not sure how?</summary>
@@ -258,24 +215,6 @@ kubectl delete deploy whoami-server -n whoami
 </details><br/>
 
 > You'll see a new Deployment and new ReplicaSet are created, scaled up to the 3 Pods set in the values file
-
-## Lab
-
-One of the great features of ArgoCD is that it can deploy all the main Kubernetes package types, without you needing to install tools or write deployment scripts.
-
-We haven't used [Kustomize](https://kustomize.io/) in this course, but it's a nice alternative to Helm if you don't have complex templating requirements.
-
-In this lab you'll use ArgoCD to deploy a Kustomize app without needing to understand what Kustomize does, or how to use it.
-
-Create an ArgoCD app for the project in `labs/argo/project/kustomize/base`:
-
-- it's in the same repo as the whoami app, so the Git URL can be the same
-- set the app to deploy to the default namespace
-- configure it for auto-sync
-
-Trigger a deployment of the app, and browse to it.
-
-> Stuck? Try [hints](hints.md) or check the [solution](solution.md).
 
 ___
 
