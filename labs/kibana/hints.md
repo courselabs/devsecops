@@ -1,6 +1,6 @@
 # Lab Hints
 
-You can load the log file in the same way as you did in the [Logstash exercises](../logstash/README.md) - the destination folder this time is the data directory in the `labs/kibana` folder.
+Start by copying the log file - the Logstash pipeline will run. 
 
 Use the Kibana Console to query the API and find the name of the new index - that's what you'll use for the index pattern.
 

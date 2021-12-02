@@ -10,7 +10,7 @@ curl -H 'Content-Type: application/json' -XPOST 'localhost:9200/logs/_bulk' --da
 
 ## Count of successful requests
 
-Successful requests have a log message containing the phrase`Fulfilment completed`.
+Successful requests have a log message containing the phrase `Fulfilment completed`.
 
 You can match just on the word `completed` as it isn't used in any other log entries:
 
@@ -33,5 +33,5 @@ Logs with the error level mostly have a message containing the phrase `document 
 curl -H 'Content-Type: application/json' http://localhost:9200/logs/_search?pretty --data-binary '@labs/elasticsearch/lab/queries/match-error.json'
 ```
 
-> The reques ID is 32441751.
+> The request ID is 32441751.
 

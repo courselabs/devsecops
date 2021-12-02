@@ -87,7 +87,7 @@ Indexing is how you store data in Elasticsearch. There are [client libraries](ht
 
 We'll use the REST API in these exercises - start by inserting a document into a new index:
 
-- [fulfilment-requested.json](data/fulfilment-requested.json) - is the source data, it's a simplified version of the document processor logs we saw in the [logging lab](../logging/README.md).
+- [fulfilment-requested.json](data/fulfilment-requested.json) - is the source data, it's a simplified version of the document processor logs from the demo fulfilment app
 
 Index the document using an HTTP POST request:
 
@@ -226,7 +226,7 @@ curl -H 'Content-Type: application/json' localhost:9200/logs/_search?pretty=true
 
 </details><br/>
 
-There are lots of search features in Elasticsearch, so the Query DSL is quite complex. We've just had an introduction here, but we'll return to  it in a later set of exercises.
+There are lots of search features in Elasticsearch, so the Query DSL is quite complex. We've just had an introduction here, but it's a topic to return to if you'll be using Elasticsearch a lot.
 
 ## Lab
 

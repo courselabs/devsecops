@@ -198,7 +198,7 @@ You'll have several dashboards for your apps, showing information at different l
 For this lab we'll stick with instance uptime, but your job is to split the dashboard into multiple rows, one for each tier of the application:
 
 - an infrastructure row with the node exporter instance
-- a web row with the docunent API instance
+- a web row with the document API instance
 - a backend row with the processor instances
 
 Each row should have a current status table and an timeline for the instances in that tier, something like this:
