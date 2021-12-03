@@ -8,7 +8,7 @@ COPY . .
 RUN dotnet publish "hello-world.csproj" -c Release -o /out
 
 # app image
-FROM mcr.microsoft.com/dotnet/runtime:3.1-alpine AS app
+FROM mcr.microsoft.com/dotnet/runtime:3.1 AS app
 WORKDIR /app
 COPY --from=build /out .
 ENTRYPOINT ["dotnet", "hello-world.dll"]

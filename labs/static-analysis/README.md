@@ -142,7 +142,7 @@ Your new quality gate should look like this:
 
 Now we can set the .NET project to use that quality gate, and the analysis will fail if the overall security rating is too low.
 
-- browse back to the project at http://localhost:9000/dashboard?id=hello-world
+- browse back to the project at http://localhost:9000/dashboard?id=hello-world-cs
 - click _Project Settings_ dropdown in top-right and select _Quality Gate_
 - select _Always use a Specific Quality Gate_ and select your new `courselabs` gate
 
