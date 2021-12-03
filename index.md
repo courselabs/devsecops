@@ -35,9 +35,9 @@ These are hands-on resources to help you learn DevOps and DevSecOps practices.
 - [Static analysis](./labs/static-analysis/README.md)
 - [Security scanning](./labs/scanning/README.md)
 - [Building a golden image library](./labs/golden-images/README.md)
-- [Container security controls](./labs/container-security/README.md)
-- [Enforcing workload policies](./labs/admission/README.md)
 - [GitOps with ArgoCD](./labs/argo/README.md)
+- [Enforcing workload policies](./labs/admission/README.md)
+- [Container security controls](./labs/container-security/README.md)
 
 ### Credits
 

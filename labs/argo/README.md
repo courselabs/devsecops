@@ -54,7 +54,7 @@ kubectl apply -n argocd -f labs/argo/specs/argocd
 
 Argo installs a new custom object type called _Application_.
 
-📋 List all of the application objects in the default namespace.
+📋 List all of the application objects in the cluster.
 
 <details>
   <summary>Not sure how?</summary>
@@ -62,7 +62,7 @@ Argo installs a new custom object type called _Application_.
 Custom objects can be used in Kubectl like ordinary objects:
 
 ```
-kubectl get applications -n default
+kubectl get applications
 ```
 
 </details><br/>
@@ -79,7 +79,7 @@ Open the UI at http://localhost:30881, log in with username `admin` and the pass
 
 Open https://localhost:30881/settings/clusters - ArgoCD is registered with the local cluster so it can manage applications, but there are no apps yet.
 
-## Create an application
+## Configure the Git server
 
 ArgoCD deploys apps as units which are configured with a source code repo to watch. The contents of the repo can be standard Kubernetes YAML, Helm charts or Kustomize. 
 
@@ -87,7 +87,7 @@ ArgoCD monitors the repo, and whenever there is a change - so the running app is
 
 We'll run a local Git server to make the deployment simple:
 
-- [gogs/gogs.yaml](./specs/gogs/gogs.yaml) is the same Gogs server we used in the [Jenkins lab](../../labs/jenkins/README.md)
+- [gogs/gogs.yaml](./specs/gogs/gogs.yaml) is the same Gogs server we've used before, but configured to run in Kubernetes 
 
 Deploy the Git server:
 
@@ -95,11 +95,13 @@ Deploy the Git server:
 kubectl apply -f labs/argo/specs/gogs
 ```
 
-When the Pod is ready, add the new server as a remote and push a copy of this repo:
+Browse to http://localhost:30300/ and when the site is ready, sign in with username `courselabs` and password `student`.
+
+Add the new Git server as a remote for this repo and push a copy of the content:
 
 ```
 # add the local Git server:
-git remote add labs-argo http://localhost:30300/kiamol/kiamol.git
+git remote add labs-argo http://localhost:30300/courselabs/labs.git
 
 # push to the expected branch name:
 git push labs-argo main:master
@@ -107,7 +109,7 @@ git push labs-argo main:master
 
 > This version of ArgoCD expects to find a branch named `master` in the Git repo. This repo uses `main` as the branch name, so the push command uses the expected name in the Git server.
 
-Now connect the ArgoCD CLI to the ArgoCD server, using your password from the Secret:
+Now connect the ArgoCD CLI to the ArgoCD server, **using your password from the Secret**:
 
 ```
 argocd login localhost:30881 --insecure --username admin --password <your-password>
@@ -117,28 +119,22 @@ argocd cluster list
 
 > You can add new clusters to deploy to a remote Kubernetes cluster. Apps can be managed with the CLI or with the UI.
 
+## Deploy an application
+
 Create an application for the app in the `labs/argo/project/whoami` folder - that folder contains a simple whoami app spec:
 
 ```
-argocd app create whoami --repo http://gogs.infra.svc.cluster.local:3000/kiamol/kiamol.git --path labs/argo/project/whoami --dest-server https://kubernetes.default.svc --sync-policy auto --self-heal
+argocd app create whoami --repo http://gogs.infra.svc.cluster.local:3000/courselabs/labs.git --path labs/argo/project/whoami --dest-server https://kubernetes.default.svc --dest-namespace default --sync-policy auto --self-heal
 ```
 
-> Creating the app doesn't deploy it.
+> Creating the app stores the definition in Kubernetes, and we've set the sync policy to _auto_ - so it will be deployed straight away.
 
-📋 Check the details of the new application with the Argo CLI and with Kubectl.
+📋 Check the details of the new application with the Argo CLI.
 
 <details>
   <summary>Not sure how?</summary>
 
-The application is just a Kubernetes object - but it's created in the Argo namespace:
-
-```
-kubectl get applications -A
-
-kubectl describe application whoami -n argocd
-```
-
-You get the key information in a more readable format from the Argo CLI:
+Applications are just Kubernetes objects - you can query them with Kubectl. But you get the key information in a readable format from the Argo CLI:
 
 ```
 argocd app list
@@ -149,22 +145,9 @@ argocd app get whoami
 </details><br/>
 
 
-Check the new application in the UI at https://localhost:30881/applications. You'll see the status is _OutOfSync_ which means the application in the cluster is not in sync with the definition in source.
+You can also see the new application in the UI at https://localhost:30881/applications. You'll see the status is _Synced_ and if you open the app you'll see all the Kubernetes resources.
 
- 
-## Deploy the app
-
-ArgoCD deploys apps when you sync them.
-
-Run this to deploy the whoami app:
-
-```
-argocd app sync whoami
-```
-
-> Check the application rollout at https://localhost:30881/applications
-
-ArgoCD deploys the app from the YAML specs in the repo - with no pipeline or scripts to maintain. You can test the app at http://localhost:30820.
+ArgoCD deploys the app from the YAML specs in the repo - with no pipeline or scripts to maintain. You can test the app at http://localhost:30010/.
 
 
 ## Lab
@@ -178,43 +161,10 @@ Edit the Kubernetes [deployment.yaml](./project/whoami/deployment.yaml) file and
 
 Trigger the update by pushing your changes to the local Git server.
 
+This ArgoCD application is set to self-heal, which means if an administrator removes any resources, ArgoCD will recreate them. Confirm that by deleting the Kubernetes Deployment object.
 
 
-<details>
-  <summary>Not sure how?</summary>
-
-```
-git add labs/argo/project/helm/whoami/values.yaml
-
-git commit -m 'Bump to build -4'
-
-git push labs-argo main:master
-```
-
-</details><br/>
-
-You can watch the update happening in the UI at https://localhost:30881/applications/whoami
-
-> ArgoCD updates the Deployment - in a minute or so you'll see a new ReplicaSet gets created with 3 Pods, and the old one scales down
-
-Automatic sync with self-heal mode means ArgoCD will repair any drift in the environment. The spec in the Git repo is the golden source and if the cluster deployment is different, it gets updated.
-
-📋 Prove that by deleting a resource which Kubernetes won't repair by itself, and watch ArgoCD fix it up.
-
-<details>
-  <summary>Not sure how?</summary>
-
-You can delete Pods - but the ReplicaSet will recreate them, or you can delete the ReplicaSet - but the Deployment will recreate it.
-
-Delete the Pod controller and normally it wouldn't get replaced:
-
-```
-kubectl delete deploy whoami-server -n whoami
-```
-
-</details><br/>
-
-> You'll see a new Deployment and new ReplicaSet are created, scaled up to the 3 Pods set in the values file
+> Stuck? Try [hints](hints.md) or check the [solution](solution.md).
 
 ___
 
@@ -228,10 +178,8 @@ argocd app delete lab whoami --cascade
 
 > ArgoCD asks you to confirm you really want to do this :)
 
-Then delete the lab namespaces:
+Then delete the lab namespaces, which will remove ArgoCD and Gogs:
 
 ```
 kubectl delete ns -l kubernetes.courselabs.co=argo
-
-kubectl delete ns whoami
 ```

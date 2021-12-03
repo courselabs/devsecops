@@ -1,25 +1,25 @@
 # Lab Solution
 
-This ArgoCD command creates a new app with the correct source setup and the app set to auto-sync:
+In my solution I've set the replica count and container image here: [lab/deployment.yaml](./lab/deployment.yaml).
+
+You can copy the contents of that file into [project/whoami/deployment.yaml](./project/whoami/deployment.yaml) and then push your changes:
 
 ```
-argocd app create lab --repo http://gogs.infra.svc.cluster.local:3000/kiamol/kiamol.git --path labs/argo/project/apod/base --dest-server https://kubernetes.default.svc --dest-namespace default --sync-policy auto --self-heal
+git add labs/argo/project/whoami/deployment.yaml
+
+git commit -m 'Bump to build -4'
+
+git push labs-argo main:master
 ```
 
-Check the app has been created:
+If you quickly browse back to the ArgoCD web page at https://localhost:30881/applications/whoami you'll see the two old Pods being removed and three new Pods being started.
+
+To test the self-healing feature, you can delete the Deployment, which will delete all the Pods:
 
 ```
-argocd app list
+kubectl delete deploy whoami
 ```
 
-Watch in the ArgCD UI at https://localhost:30881/applications/lab or use Kubectl to see the Pods being created:
+Check the web UI again and you'll see new Pods being created to replace the deleted ones. 
 
-```
-kubectl get po -n default -l project=apod --watch
-```
-
-When the Pods are all ready, you can find the app URL by looking for public Services in the ArgoCD UI or Kubectl.
-
-Try the app at http://localhost:30810. You should see NASA's Astronomy Picture of the Day.
-
-
+Test the app at http://localhost:30010 and you'll see its still working.

@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
         - name: gogs
-          image: kiamol/ch11-gogs
+          image: courselabs/gogs:0.12.3
           ports:
             - name: gogs
               containerPort: 3000
