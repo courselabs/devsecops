@@ -1,4 +1,4 @@
-# Preparing for Production
+# Container Security
 
 It's fairly straightforward to model your apps in Kubernetes and get them running, but there's more work to do before you get to production - and security is one of the main areas.
 
