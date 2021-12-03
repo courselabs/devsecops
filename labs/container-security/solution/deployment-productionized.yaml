@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: configurable
   labels: 
-    kubernetes.courselabs.co: productionizing
+    kubernetes.courselabs.co: container-security
 spec:
   replicas: 5
   selector:

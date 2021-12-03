@@ -1,7 +1,9 @@
 # Lab Hints
 
-This is about taking the best practices from the updates to the Pi and whoami apps, and applying them to the configurable app.
+The sensible approach here is to delete the comments one line at a time.
 
-You'll need to tweak the resource limits and the probe intervals to find a good balance for your app.
+Make sure your YAML is still well-formatted and then run `kubectl apply` again.
+
+Check the replacement Pod starts and runs correctly, and the app is still working.
 
 > Need more? Here's the [solution](solution.md).
