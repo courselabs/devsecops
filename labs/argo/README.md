@@ -183,3 +183,9 @@ Then delete the lab namespaces, which will remove ArgoCD and Gogs:
 ```
 kubectl delete ns -l kubernetes.courselabs.co=argo
 ```
+
+And remove the Git remote:
+
+```
+git remote rm labs-argo
+```

@@ -7,231 +7,27 @@ You can do this with admission controller webhooks - HTTP servers which run insi
 ## Reference
 
 - [Using admission controllers](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/)
-- [Creating self-signed SSL certs for webhook servers](https://cert-manager.io/docs/concepts/ca-injector/)
 - [OPA Gatekeeper](https://open-policy-agent.github.io/gatekeeper/website/docs/)
 - [Gatekeeper policy library](https://github.com/open-policy-agent/gatekeeper-library)
 
-## In-cluster webhook servers over HTTPS
 
-Admission controller webhooks give you the most flexibility, because you can run any code you like. You'll typically run them inside the cluster using standard Deployment and Service objects.
+## Validating and Mutating Webhooks
 
-**But** the Kubernetes API server will only call webhooks if they're served over HTTPS using a trusted certificate. A nice way to do that is with [cert-manager](https://cert-manager.io), a CNCF project which generates TLS certificates and creates them as Secrets.
+You can write your own admission control logic in a REST API which you run in the cluster, and configure rules which apply to Kubernetes objects:
 
-- [cert-manager/1.5.3.yaml](./specs/cert-manager/1.5.3.yaml) - is from the cert-manager docs, it includes custom resources to create Certificates and all the RBAC, Services and Deployments to run the manager. It's complex - but definitely better than managing certs yourself
+- [this ValidatingWebhookConfiguration](./specs/validating-webhook/validatingWebhookConfiguration.yaml) fires when Pods are created or updated in the cluster, and calls the validate method on a custom webhook server; the server will return whether the action is allowed to proceed
 
-_Deploy cert-manager:_
+- [this MutatingWebhookConfiguration](./specs/mutating-webhook/mutatingWebhookConfiguration.yaml) - fires when Pods are created or updated, and calls the mutate endpoint on the server; this could edit the spec and send back the changes before Kubernetes runs the action.
 
-```
-kubectl apply -f labs/admission/specs/cert-manager
-```
+We could run a webhook server in the cluster - these examples work with a demo NodeJS web app ([source code on GitHub](https://github.com/sixeyed/kiamol/tree/master/ch16/docker-images/admission-webhook/src)) - but there's a more common alternative.
 
-Cert-manager uses _Issuers_ to define how certificates get created. You can configure this to use a real certificate provider - e.g. Let's Encrypt - but we'll use a self-signed issuer:
-
-- [issuers/self-signed.yaml](./specs/cert-manager/issuers/self-signed.yaml) - creates the issuer; this is a custom resource but this spec doesn't need any special config
-
-📋 Create the issuer and print the details.
-
-<details>
-  <summary>Not sure how?</summary>
-
-It's a custom resource, but it's all YAML to Kubernetes:
-
-```
-kubectl apply -f labs/admission/specs/cert-manager/issuers
-```
-
-And you work with it in the usual way:
-
-```
-kubectl get issuers
-
-kubectl describe issuer selfsigned
-```
-
-You'll see a lot of output, including the status showing the issuer is ready to use.
-
-</details><br/>
-
-Our admission controller is a NodeJS web app, built to match the webhook API spec ([source code on GitHub](https://github.com/sixeyed/kiamol/tree/master/ch16/docker-images/admission-webhook/src)):
-
-- [webhook-server/admission-webhook.yaml](./specs/webhook-server/admission-webhook.yaml) - defines a Deployment and Service. There's no RBAC or special permissions, this is a standalone web server - but it does run under HTTPS, expecting to find the TLS cert in a Secret
-
-- [webhook-server/certificate.yaml](./specs/webhook-server/certificate.yaml) - will create the certificate using the self-signed issuer and store it in the Secret the Pod expects to use. cert-manager will take care of creating and rotating this cert.
-
-📋 Deploy the webhook server and confirm the certificate Secret gets created.
-
-<details>
-  <summary>Not sure how?</summary>
-
-The specs are in the `webhook-server` folder:
-
-```
-kubectl apply -f labs/admission/specs/webhook-server
-```
-
-Check the certificate objects:
-
-```
-kubectl get certificates
-```
-
-You should see that the cert is _Ready_ and the output shows the Secret name where it is stored:
-
-```
-kubectl describe secret admission-webhook-cert
-```
-
-The Secret contains the TLS certificate and key, and the CA certificate for the issuer.
-
-</details><br/>
-
-This is just a standard web server, so we can test the HTTPS setup by running a sleep Pod:
-
-```
-kubectl apply -f labs/admission/specs/sleep
-
-# you'll get a security error here:
-kubectl exec sleep -- curl https://admission-webhook.default.svc
-```
-
-> The error means the certificate has been applied, but curl doesn't trust the issuer
-
-## Validating Webhooks
-
-The admission controller is running, but it's not doing anything yet. It needs to be configured as a webhook for the Kubernetes API server to call:
-
-- [validatingWebhookConfiguration.yaml](./specs/validating-webhook/validatingWebhookConfiguration.yaml) - configures Kubernetes to call the webhook on the `/validate` path when Pods are created or updated; the annotation is there to configure the self-signed cert as trusted.
-
-This is a validating webhook - the logic in the server will block any Pods from being created, where the spec does not set the `automountServiceAccountToken` field to `false`. 
-
-Apply the validating webhook:
-
-```
-kubectl apply -f labs/admission/specs/validating-webhook
-```
-
-Check the details and you'll see cert-manager has applied the CA cert from the certificate it generated:
-
-```
-kubectl describe validatingwebhookconfiguration servicetokenpolicy
-```
-
-Now the webhook is running, Kubernetes won't run any Pods that don't meet the rules - like the one in this [whoami app Deployment](./specs/whoami/deployment.yaml).
-
-Create the application objects:
-
-```
-kubectl apply -f labs/admission/specs/whoami
-```
-
-📋 The app won't run. Debug it to find the error message generated by the admission controller.
-
-<details>
-  <summary>Not sure how?</summary>
-
-Check the Deployment:
-
-```
-kubectl get deploy whoami
-
-kubectl describe deploy whoami
-```
-
-There should be two Pods, but none are ready. The events show the ReplicaSet has been created and scaled up, so there are no errors here.
-
-Check the RS:
-
-```
-kubectl describe rs -l app=whoami
-```
-
-Here you see the message from the admission controller:  _Error creating: admission webhook "servicetokenpolicy.courselabs.co" denied the request: automountServiceAccountToken must be set to false_
-
-</details><br/>
-
-
-This app won't fix itself - the ReplicaSet will keep trying to create Pods and they will keep getting rejected by the admission controller.
-
-To get it running you need to change the Pod spec - you can edit the Deployment or apply [a new spec](./specs/whoami/fix/deployment.yaml) which meets the validation rules:
-
-```
-kubectl apply -f labs/admission/specs/whoami/fix
-
-kubectl get po -l app=whoami --watch
-```
-
-> Now the Pods get created.
-
-Validating webhooks are a powerful way of ensuring your apps meet your policies - any objects can be targetted and the whole spec is sent to the webhook, so you can use it for security, performance or reliability rules.
-
-## Mutating Webhooks
-
-Validating webhooks either allow an oject to be created or they block it. The other type of admission control is to silently edit the incoming object spec using a mutating webhook.
-
-The webhook server we're running has mutation logic too:
-
-- [mutatingWebhookConfiguration.yaml](./specs/mutating-webhook/mutatingWebhookConfiguration.yaml) - operates when Pods are created or updated, and calls the `/mutate` endpoint on the server.
-
-Deploy the new webhook:
-
-```
-kubectl apply -f labs/admission/specs/mutating-webhook
-
-kubectl describe mutatingwebhookconfiguration nonrootpolicy
-```
-
-> There's no information about what this policy actually does...
-
-Try running another app - using this [spec for the Pi website](./specs/pi/pi.yaml):
-
-```
-kubectl apply -f labs/admission/specs/pi
-```
-
-📋 This app won't run either. Check the objects and the spec to try to find out what went wrong.
-
-<details>
-  <summary>Not sure how?</summary>
-
-Look at the Pods:
-
-```
-kubectl get po -l app=pi-web
-```
-
-You'll see the status is _CreateContainerConfigError_. Check the Pod details:
-
-```
-kubectl describe po -l app=pi-web
-```
-
-You'll see an error message in the events: _Error: container has runAsNonRoot and image will run as root_.
-
-That means the container image uses the root user by default, but the Pod spec is set with a security context so it won't run containers as root.
-
-</details><br/>
-
-The Pod spec in the Deployment doesn't say anything about non-root users, that's been applied by the mutating webhook.
-
-You can get the app running by applying this [updated spec](./specs/pi/fix/pi-nonroot.yaml):
-
-```
-kubectl apply -f labs/admission/specs/pi/fix
-```
-
-## OPA Gatekeeper
+## Run OPA Gatekeeper
 
 Custom webhooks have two drawbacks: you need to write the code yourself, which adds to your maintenance estate; and their rules are not discoverable through the cluster, so you'll need external documentation.
 
 OPA Gatekeeper is an alternative which implements admission control using generic rule descriptions (in a language called [Rego](https://www.openpolicyagent.org/docs/latest/policy-language/)).
 
-We'll deploy admission rules with Gatekeeper - first delete all of the custom webhooks (ours and cert-manager's):
-
-```
-kubectl delete ns,all,ValidatingWebhookConfiguration,MutatingWebhookConfiguration -l kubernetes.courselabs.co=admission
-
-kubectl delete crd,ValidatingWebhookConfiguration,MutatingWebhookConfiguration -l app.kubernetes.io/instance=cert-manager
-```
+We'll deploy admission rules with Gatekeeper - which is another CNCF project. It extends Kubernetes with new object types, and you use those objects to store and apply your own rules.
 
 OPA Gatekeeper is another complex component, where you trade the overhead of managing it with the issues of running your own controllers:
 
@@ -258,11 +54,13 @@ You'll see a few - the main one we work with is the ConstraintTemplate.
 
 </details><br/>
 
+## Deploy OPA admission rules
+
 There are two parts to applying rules with Gatekeeper:
 
-1. Create a _ConstraintTemplate_ which defines a generic constraint (e.g. containers in a given namespace can only use a given image registry)
+1. Create a _ConstraintTemplate_ which defines a generic constraint (e.g. containers in a certain namespace can only use a certain image registry)
 
-2. Create a _Constraint_ from the template (e.g.containers in namespace `apod` can only use images from `courselabs` repos on Docker Hub)
+2. Create a _Constraint_ from the template (e.g. containers in namespace `whoami` can only use images from `courselabs` repos on Docker Hub)
 
 The rule definition is done with the Rego generic policy language:
 
@@ -326,11 +124,106 @@ You'll see all the existing violations of the rule, and it should be clear what'
 
 </details><br/>
 
+Rego is not a straightforward language - but it is a generic way of defining policies. Trivy uses Rego for its [Kubernetes misconfiguration policy library](https://github.com/aquasecurity/appshield/tree/master/kubernetes).
+
+## Verify the OPA rules
+
+This application YAML in the `labs/admission/specs/pi` folder violates all the OPA rules for namespaces and Pods.
+
+📋 Deploy the app. Does it run?
+
+<details>
+  <summary>Not sure?</summary>
+
+Use Kubectl apply:
+
+```
+kubectl apply -f labs/admission/specs/pi
+```
+
+You'll see errors saying that the namespace can't be created because of a policy violation, and then the other objects can't be created because the namespace doesn't exist.
+
+</details>
+
+Some policy failures happen on the objects which you create with Kubectl - so you see clear validation errors like this.
+
+The fix is in [fix-1/01-namespace.yaml](./specs/pi/fix-1/01-namespace.yaml) which adds the required label to the namespace. Deploy the fixed version and check the output:
+
+```
+kubectl apply -f labs/admission/specs/pi/fix-1
+```
+
+The output from Kubectl says all the objects are created. It should be listening at http://localhost:30031. Is it working? No... The Service has been created but there's no response from it.
+
+📋 Can you debug to see what the problem is?
+
+<details>
+  <summary>Not sure how?</summary>
+
+Start by describing the Service:
+
+```
+kubectl describe svc pi-np -n pi
+```
+
+You'll see there are no _Endpoints_ which means no Pods are enlisted as targets for the Service to route traffic.
+
+Try listing all the Pods in the namespace:
+
+```
+kubectl get po -n pi
+```
+
+None. Hmm. How about Deployments and ReplicaSets?
+
+```
+kubectl get deploy,rs -n pi
+```
+
+They've been created but there are no Pods. Describe the ReplicaSet to see the problem:
+
+```
+kubectl describe rs -n pi
+```
+
+Now you'll see the error.
+
+</details>
+
+The OPA Gatekeeper policy blocks Pods from being created - there are two warning messages in the events which tell you why:
+
+```
+Error creating: admission webhook "validation.gatekeeper.sh" denied the request: [resource-limits] container <pi-web> has no resource limits
+
+Error creating: admission webhook "validation.gatekeeper.sh" denied the request: [requiredlabels-pods] you must provide labels: {"version"}
+```
+
+But you don't see that in Kubectl, because you're not creating Pods directly - you create a Deployment, which creates a ReplicaSet which creates the Pods.
+
+The Pod template in [fix-2/deployment.yaml](./specs/pi/fix-2/deployment.yaml) adds the necessary labels and resources.
+
+📋 Deploy the fix-2 YAML - does the app work now?
+
+<details>
+  <summary>Not sure how?</summary>
+
+```
+kubectl apply -f labs/admission/specs/pi/fix-2
+
+kubectl get pods -n pi
+```
+
+Looking good :)
+
+</details>
+
+Try the app now at http://localhost:30031. It's running with a constrained amount of CPU and memory, and from an ops perspective it's easy to manage because it has a consistent set of labels.
+
 ## Lab
 
-Now we have OPA Gatekeeper in place, we can see how it works.
+Your turn to try deploying an app and making sure it meets the admission requirements.
 
-Try deploying the APOD app from the specs for this lab:
+Try deploying the demo Astronomy Picture of the Day app from the specs for this lab:
 
 ```
 kubectl apply -f labs/admission/specs/apod
@@ -344,13 +237,13 @@ ___
 
 ## Cleanup
 
-Remove all the lab's namespaces:
+Remove all the lab's namespaces, which removes all the other objects:
 
 ```
 kubectl delete ns -l kubernetes.courselabs.co=admission
 ```
 
-And the CRDs:
+Except the CRDs:
 
 ```
 kubectl delete crd -l gatekeeper.sh/system
