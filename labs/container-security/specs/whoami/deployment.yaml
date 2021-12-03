@@ -23,6 +23,9 @@ spec:
           env:
             - name: WHOAMI_MODE
               value: q
+          ports:
+            - containerPort: 80
+              name: http
           # resources:
           #  limits:
           #    cpu: 125m

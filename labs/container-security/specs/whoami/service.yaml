@@ -10,6 +10,6 @@ spec:
   ports:
     - name: http
       port: 8010
-      targetPort: 80
+      targetPort: http
       nodePort: 30022
   type: NodePort
