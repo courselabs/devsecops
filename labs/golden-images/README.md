@@ -74,7 +74,7 @@ docker-compose -f ./labs/golden-images/library/docker-compose.yml build --pull
 
 </details>
 
-Check the sizes and tags of the new libray images:
+Check the sizes and tags of the new library images:
 
 ```
 docker image ls courselabs/java*
