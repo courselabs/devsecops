@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: whoami
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
       app: whoami
@@ -14,4 +14,4 @@ spec:
     spec:
       containers:
         - name: app
-          image: courselabs/whoami-lab:21.09-3
+          image: courselabs/whoami-lab:21.09-4
