@@ -129,6 +129,8 @@ argocd app create whoami --repo http://gogs.infra.svc.cluster.local:3000/coursel
 
 > Creating the app stores the definition in Kubernetes, and we've set the sync policy to _auto_ - so it will be deployed straight away.
 
+You can also create apps by deploying Kubernetes YAML. Here's an alternative version of the [whoami application](./specs/apps/whoami.yaml) we could use.
+
 📋 Check the details of the new application with the Argo CLI.
 
 <details>
