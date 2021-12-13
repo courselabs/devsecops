@@ -28,7 +28,7 @@ docker-compose -f labs/golden-images/apps/docker-compose.yml build
 The image references both start with `courselabs/app` and use the `v1` tag so you can use that in a filter:
 
 ```
-docker image ls courselabs/app*:v1
+docker image ls "courselabs/app*:v1"
 ```
 
 You'll see that app-2 is about a 200MB image and app-1 is over 600MB.
@@ -77,7 +77,7 @@ docker-compose -f ./labs/golden-images/library/docker-compose.yml build --pull
 Check the sizes and tags of the new library images:
 
 ```
-docker image ls courselabs/java*
+docker image ls "courselabs/java*"
 ```
 
 The Alpine versions are about 2/3 the size of the Debian variants:
@@ -115,7 +115,7 @@ docker-compose -f labs/golden-images/apps/docker-compose-v2.yml build
 These images start with `courselabs/app` and use the `v2` tag so you can use that in a filter:
 
 ```
-docker image ls courselabs/app*:v2
+docker image ls "courselabs/app*:v2"
 ```
 
 They're both under 200MB - almost the same size as the golden JRE image. The application binaries are so small they don't add much to the base image.
@@ -145,7 +145,7 @@ It's tricky to see how much space your images actually use because Docker report
 The output of the image list doesn't make it clear how much layer sharing is happening:
 
 ```
-docker image ls courselabs/app*
+docker image ls "courselabs/app*"
 ```
 
 It seems you have 2x184MB for the v2 apps, but we know that it's mostly one set of shared layers.

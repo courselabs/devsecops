@@ -15,3 +15,6 @@ docker image ls courselabs/rng-api
 ```
 
 Those two tags are aliases of the same image now, but with the next release the `21.05` tag will advance and will be an alias of a later build.
+
+___
+> Back to the [exercises](README.md).

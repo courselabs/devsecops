@@ -23,3 +23,6 @@ kubectl delete deploy whoami
 Check the web UI again and you'll see new Pods being created to replace the deleted ones. 
 
 Test the app at http://localhost:30010 and you'll see its still working.
+
+___
+> Back to the [exercises](README.md).

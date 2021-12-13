@@ -11,7 +11,7 @@ The POM should be updated so that Micrometer uses an explicit version instead of
 You can build the sample solution with a new tag:
 
 ```
-docker build -t app-3:v2 .\labs\golden-images\lab\
+docker build -t app-3:v2 ./labs/golden-images/lab/
 ```
 
 Check the app images:
@@ -37,3 +37,6 @@ docker inspect app-3:v2
 ```
 
 You'll see v1 has a different set of layers - no commonality with any of the other Java apps we've built. v2 shares the same base layers as the v2 images from app-1 and app-2, so we're maximizing the layer cache as well as enforcing an approved base image.
+
+___
+> Back to the [exercises](README.md).

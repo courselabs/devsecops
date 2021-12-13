@@ -35,3 +35,6 @@ curl -H 'Content-Type: application/json' http://localhost:9200/logs/_search?pret
 
 > The request ID is 32441751.
 
+
+___
+> Back to the [exercises](README.md).

@@ -39,7 +39,7 @@ var (
 func init() {
 	flag.StringVar(&cert, "cert", "", "give me a certificate")
 	flag.StringVar(&key, "key", "", "give me a key")
-	flag.StringVar(&port, "port", "80", "give me a port number")
+	flag.StringVar(&port, "port", "80", "give me the port number")
 	flag.StringVar(&name, "name", os.Getenv("WHOAMI_NAME"), "give me a name")
 	flag.StringVar(&mode, "mode", os.Getenv("WHOAMI_MODE"), "set mode: q=quiet")
 }

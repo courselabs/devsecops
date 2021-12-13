@@ -54,3 +54,5 @@ You'll see a final log entry like this:
 
 The ID of the span begins with the trace ID we set in the curl header (minus the initial `00-` which is the trace format version number).
 
+___
+> Back to the [exercises](README.md).

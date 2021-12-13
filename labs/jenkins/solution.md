@@ -28,3 +28,6 @@ Change the line `java HelloWorkd` in the Jenkinsfile to `java HelloWorld` in the
 Then commit and push your changes. Back in Jenkins, wait for the build to trigger from the SCM change (or click _Build Now_). 
 
 All will be well. Check the output page for the build and you'll see a list of archived artifacts, containing the Java class file.
+
+___
+> Back to the [exercises](README.md).

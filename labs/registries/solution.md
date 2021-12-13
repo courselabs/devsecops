@@ -23,3 +23,6 @@ For other registries you need to include the domain in the reference - so images
 ```
 docker pull mcr.microsoft.com/dotnet/runtime:5.0
 ```
+
+___
+> Back to the [exercises](README.md).

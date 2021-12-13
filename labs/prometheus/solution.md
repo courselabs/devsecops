@@ -37,3 +37,6 @@ Then query the API using the variables in the URL - this works for PowerShell an
 ```
 curl "localhost:9090/api/v1/query_range?query=fulfilment_in_flight_total&start=$start&end=$end&step=30s"
 ```
+
+___
+> Back to the [exercises](README.md).

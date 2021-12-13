@@ -34,3 +34,6 @@ In the labels you'll see the build tag and commit hash:
 ```
 
 > The build tag includes the Jenkins job name, build number and git branch
+
+___
+> Back to the [exercises](README.md).

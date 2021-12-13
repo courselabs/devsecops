@@ -17,3 +17,6 @@ docker build -t hello-world-java --build-arg SONAR_TOKEN=$SONAR_TOKEN --build-ar
 ```
 
 Open the project and you'll see there's a critical security issue in the code - http://localhost:9000/project/issues?id=hhello-world-java&resolved=false&severities=BLOCKER%2CCRITICAL%2CMAJOR%2CMINOR&types=VULNERABILITY
+
+___
+> Back to the [exercises](README.md).

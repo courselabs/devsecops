@@ -20,3 +20,5 @@ The final document API span contains some log entries as well as the tags. The l
 handler.class_simple_name = DocumentsController	
 handler.method_name	= submitDocument
 ```
+___
+> Back to the [exercises](README.md).
