@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 
 WORKDIR /src
 COPY ["hello-world.csproj", "."]
@@ -8,7 +8,7 @@ COPY . .
 RUN dotnet publish "hello-world.csproj" -c Release -o /out
 
 # app image
-FROM mcr.microsoft.com/dotnet/runtime:3.1 AS app
+FROM mcr.microsoft.com/dotnet/runtime:6.0 AS app
 WORKDIR /app
 COPY --from=build /out .
 ENTRYPOINT ["dotnet", "hello-world.dll"]

@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:5.0-alpine AS builder
+FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine AS builder
 ARG BUILD_VERSION=1.0.0
 
 WORKDIR /src
@@ -9,7 +9,7 @@ COPY src/Numbers.Api/ .
 RUN dotnet publish -c Release /p:Version=$BUILD_VERSION -o /out Numbers.Api.csproj
 
 # app image
-FROM mcr.microsoft.com/dotnet/aspnet:5.0-alpine
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine
 
 ENTRYPOINT ["dotnet", "/app/Numbers.Api.dll"]
 

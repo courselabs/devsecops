@@ -1,5 +1,5 @@
 
-FROM mcr.microsoft.com/dotnet/sdk:3.1 AS sdk
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS sdk
 
 # Sonar Scanner CLI needs JRE:
 RUN apt-get update && \
@@ -26,7 +26,7 @@ RUN if [ "$SONAR_TOKEN" != "" ] ; then dotnet sonarscanner end /d:sonar.login=$S
 
 RUN dotnet publish "hello-world.csproj" -c Release -o /out
 
-FROM mcr.microsoft.com/dotnet/runtime:3.1
+FROM mcr.microsoft.com/dotnet/runtime:6.0
 WORKDIR /app
 COPY --from=build /out .
 ENTRYPOINT ["dotnet", "hello-world.dll"]

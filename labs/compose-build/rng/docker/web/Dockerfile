@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:5.0-alpine AS builder
+FROM mcr.microsoft.com/dotnet/sdk:6.0-alpine AS builder
 ARG BUILD_VERSION=1.0.0
 
 WORKDIR /src
@@ -9,7 +9,7 @@ COPY src/Numbers.Web/ .
 RUN dotnet publish -c Release /p:Version=$BUILD_VERSION -o /out Numbers.Web.csproj
 
 # app image
-FROM mcr.microsoft.com/dotnet/aspnet:5.0-alpine
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-alpine
 
 ENV RngApi__Url=http://numbers-api/rng
 
