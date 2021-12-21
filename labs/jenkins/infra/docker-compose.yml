@@ -8,7 +8,7 @@ services:
       - "3000:3000"
 
   jenkins:
-    image: courselabs/jenkins
+    image: courselabs/jenkins:2.319.1
     ports:
       - "8080:8080"
     volumes:
